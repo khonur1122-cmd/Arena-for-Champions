@@ -82,11 +82,11 @@
     }
     @keyframes popBounce {
       0% { transform: scale(0.3); opacity: 0; }
-      50% { transform: scale(1.1); opacity: 1; }
-      70% { transform: scale(0.95); }
+      50% { transform: scale(1.05); opacity: 1; }
+      70% { transform: scale(0.98); }
       100% { transform: scale(1); opacity: 1; }
     }
-    .animate-pop { animation: popBounce 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    .animate-pop { animation: popBounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: #0F172A; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
@@ -310,8 +310,8 @@
       </div>
 
       <div class="flex items-center justify-between pt-4 border-t border-slate-800">
-        <button onclick="unclaimSingleQuestion(currentActiveQuestionIndex)" class="px-3.5 py-2 rounded-xl bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-800/60 text-xs font-bold transition flex items-center">
-          <i class="fa-solid fa-ban mr-1.5"></i>Batalkan / Bersihkan Klaim Soal Ini
+        <button onclick="requestUnclaimQuestion(currentActiveQuestionIndex)" class="px-3.5 py-2 rounded-xl bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-800/60 text-xs font-bold transition flex items-center shadow-md">
+          <i class="fa-solid fa-ban mr-1.5 text-rose-400"></i>Batalkan / Bersihkan Klaim Soal Ini
         </button>
         <span class="text-xs text-slate-400 font-bold">Arena for Champions Engine</span>
       </div>
@@ -343,6 +343,34 @@
       <button onclick="closeFeedbackModal()" class="w-full py-3.5 rounded-2xl font-black text-sm uppercase tracking-wider shadow-lg transition active:scale-95 bg-amber-500 hover:bg-amber-400 text-slate-950">
         Lanjutkan Kuis <i class="fa-solid fa-arrow-right ml-1"></i>
       </button>
+
+    </div>
+  </div>
+
+  <!-- MODAL POP-UP KONFIRMASI BATALKAN KLAIM (HIGH-TECH & VISUAL MENARIK) -->
+  <div id="modal-confirm-unclaim" class="fixed inset-0 z-[60] bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card max-w-md w-full rounded-3xl p-6 sm:p-8 text-center relative shadow-2xl border border-rose-500/40 glow-red animate-pop">
+      
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-500/20 to-red-600/30 border border-rose-500/40 text-rose-400 flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg animate-bounce">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+
+      <h3 class="text-xl sm:text-2xl font-black font-display text-white mb-2">
+        Konfirmasi Batalkan Klaim
+      </h3>
+
+      <p id="unclaim-dialog-msg" class="text-xs text-slate-300 leading-relaxed mb-6">
+        Apakah Anda yakin ingin membatalkan status klaim untuk soal ini? Soal akan kembali bersih dan terbuka untuk direbutkan kembali.
+      </p>
+
+      <div class="flex items-center justify-center space-x-3">
+        <button onclick="closeUnclaimConfirmModal()" class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-slate-700 transition flex-1">
+          <i class="fa-solid fa-xmark mr-1.5"></i>Batal
+        </button>
+        <button onclick="executeUnclaimQuestion()" class="px-5 py-3 rounded-xl bg-gradient-to-r from-rose-600 to-red-500 hover:from-rose-500 hover:to-red-400 text-white font-black text-xs shadow-lg shadow-rose-600/30 transition flex-1">
+          <i class="fa-solid fa-check mr-1.5"></i>Ya, Batalkan Klaim
+        </button>
+      </div>
 
     </div>
   </div>
@@ -391,7 +419,7 @@
           <h4 class="text-xs font-bold text-slate-200 flex items-center">
             <i class="fa-solid fa-file-arrow-up mr-2 text-emerald-400"></i> Unggah Materi Pintar (.JSON / .TXT)
           </h4>
-          <p class="text-[11px] text-slate-400">Pilah otomatis menjadi sub-bab, poin-poin khusus, dan contoh lengkap dengan tata letak visual.</p>
+          <p class="text-[11px] text-slate-400">Materi baru akan langsung menggantikan materi lama secara otomatis tanpa menumpuk.</p>
           <input type="file" id="upload-materi-file" accept=".json,.txt,.md" class="text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-800 file:text-emerald-300 hover:file:bg-slate-700 cursor-pointer w-full">
           <div class="flex space-x-2">
             <button onclick="downloadMateriTemplate()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-bold flex-1 border border-slate-700">
@@ -407,7 +435,7 @@
           <h4 class="text-xs font-bold text-slate-200 flex items-center">
             <i class="fa-solid fa-file-arrow-up mr-2 text-amber-400"></i> Unggah Bank Soal Kustom (.JSON)
           </h4>
-          <p class="text-[11px] text-slate-400">Unggah file kuis baru tanpa soal ganda untuk kuis rebutan 5 kelompok.</p>
+          <p class="text-[11px] text-slate-400">Bank soal baru akan menggantikan soal lama secara utuh dan memposting ulang matriks.</p>
           <input type="file" id="upload-soal-file" accept=".json" class="text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-800 file:text-amber-300 hover:file:bg-slate-700 cursor-pointer w-full">
           <div class="flex space-x-2">
             <button onclick="downloadSoalTemplate()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-bold flex-1 border border-slate-700">
@@ -627,8 +655,9 @@
     let currentSubBab = 0;
     let isGamePaused = false;
     let currentActiveQuestionIndex = null;
+    let pendingUnclaimIndex = null;
     let timerInterval = null;
-    let timerSecondsLeft = 30; // Updated to 30 Seconds
+    let timerSecondsLeft = 30; // 30 Detik Timer
     let questionStartTime = 0;
 
     let appConfig = {
@@ -636,7 +665,7 @@
       mapel: "Ekosistem & Lingkungan"
     };
 
-    // MODUL MATERI DEFAULT TERIkat DENGAN sectionId & visualId UNIK
+    // MODUL MATERI DEFAULT
     let MATERI_MODULES = [
       {
         sectionId: "sec-eko-komponen-1",
@@ -845,78 +874,51 @@
       alert("Informasi kelas dan mata pelajaran berhasil diperbarui!");
     }
 
-    // --- GENERATOR ANIMASI ADAPTIF & SINKRON MATERI ---
-    // Menganalisis objek, proses, sectionId, & visualId secara presisi
+    // --- GENERATOR ANIMASI ADAPTIF SVG ---
     function getAdaptiveAnimationSVG(data) {
       const lowerText = (JSON.stringify(data) + " " + (data.sectionId || "") + " " + (data.visualId || "")).toLowerCase();
 
-      // 1. ANIMASI PROSES SIKLUS AIR / DAUR AIR
+      // 1. SIKLUS AIR
       if (data.visualId === "vis-eko-siklus-air" || lowerText.includes("siklus air") || lowerText.includes("daur air") || lowerText.includes("evaporasi")) {
         return `
           <svg class="w-full max-w-sm h-64" viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Matahari -->
             <circle cx="270" cy="45" r="24" fill="#F59E0B" class="animate-pulse-glow" />
-            
-            <!-- Laut / Perairan -->
             <path d="M0 180 Q160 160 320 180 V240 H0 Z" fill="#2563EB"/>
             <text x="10" y="215" fill="#E0F2FE" font-size="10" font-weight="extrabold">1. Laut/Danau (Air)</text>
-
-            <!-- Awan Kondensasi -->
             <g class="animate-float">
               <path d="M70 65 Q90 45 120 65 Q140 45 160 65 H70 Z" fill="#93C5FD" opacity="0.9"/>
               <text x="80" y="55" fill="#1E293B" font-size="9" font-weight="bold">2. Awan (Kondensasi)</text>
             </g>
-
-            <!-- Evaporasi (Uap Naik) -->
             <path d="M220 165 Q230 120 220 85" stroke="#FBBF24" stroke-width="3" stroke-linecap="round" class="animate-flow"/>
             <text x="215" y="130" fill="#FBBF24" font-size="9" font-weight="bold">Evaporasi ➔</text>
-
-            <!-- Hujan (Presipitasi) -->
             <line x1="90" y1="80" x2="85" y2="120" stroke="#38BDF8" stroke-width="2" stroke-dasharray="4 4" class="animate-pulse"/>
             <line x1="110" y1="80" x2="105" y2="120" stroke="#38BDF8" stroke-width="2" stroke-dasharray="4 4" class="animate-pulse"/>
             <line x1="130" y1="80" x2="125" y2="120" stroke="#38BDF8" stroke-width="2" stroke-dasharray="4 4" class="animate-pulse"/>
             <text x="25" y="105" fill="#38BDF8" font-size="9" font-weight="bold">3. Presipitasi (Hujan)</text>
-
-            <!-- Infiltrasi -->
             <path d="M40 180 Q50 200 60 220" stroke="#10B981" stroke-width="2" stroke-dasharray="3 3"/>
             <text x="65" y="232" fill="#10B981" font-size="8" font-weight="bold">4. Infiltrasi (Tanah)</text>
           </svg>
         `;
       }
 
-      // 2. ANIMASI URUTAN PROSES RANTAI MAKANAN
+      // 2. RANTAI MAKANAN
       if (data.visualId === "vis-eko-rantai-makanan" || lowerText.includes("rantai makanan") || lowerText.includes("produsen")) {
         return `
           <svg class="w-full max-w-sm h-64" viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Langkah 1: Sinar Matahari -->
             <circle cx="45" cy="40" r="18" fill="#F59E0B" class="animate-pulse-glow"/>
             <text x="15" y="70" fill="#FCD34D" font-size="9" font-weight="extrabold">1. Energi Surya</text>
-
-            <!-- Langkah 2: Produsen (Padi/Tumbuhan) -->
             <rect x="20" y="140" width="55" height="50" rx="8" fill="#065F46" stroke="#34D399" stroke-width="2"/>
             <text x="28" y="165" fill="#A7F3D0" font-size="10" font-weight="black">Padi</text>
             <text x="24" y="180" fill="#6EE7B7" font-size="8">(Produsen)</text>
-
-            <!-- Panah 1 -->
             <path d="M80 165 H105" stroke="#F59E0B" stroke-width="3" stroke-linecap="round" class="animate-flow"/>
-
-            <!-- Langkah 3: Konsumen I (Belalang/Serangga) -->
             <rect x="110" y="140" width="60" height="50" rx="8" fill="#92400E" stroke="#FBBF24" stroke-width="2"/>
             <text x="116" y="165" fill="#FDE68A" font-size="10" font-weight="black">Belalang</text>
             <text x="115" y="180" fill="#FCD34D" font-size="8">(Konsumen I)</text>
-
-            <!-- Panah 2 -->
             <path d="M175 165 H200" stroke="#F59E0B" stroke-width="3" stroke-linecap="round" class="animate-flow"/>
-
-            <!-- Langkah 4: Konsumen II (Katak/Predator) -->
             <rect x="205" y="140" width="55" height="50" rx="8" fill="#1E3A8A" stroke="#60A5FA" stroke-width="2"/>
             <text x="216" y="165" fill="#BFDBFE" font-size="10" font-weight="black">Katak</text>
             <text x="210" y="180" fill="#93C5FD" font-size="8">(Konsumen II)</text>
-
-            <!-- Panah Ke Pengurai -->
             <path d="M232 135 Q232 80 160 80 Q90 80 90 120" stroke="#A855F7" stroke-width="2" stroke-dasharray="4 4"/>
-
-            <!-- Langkah 5: Dekomposer / Pengurai -->
             <rect x="125" y="55" width="70" height="40" rx="8" fill="#581C87" stroke="#C084FC" stroke-width="2"/>
             <text x="135" y="75" fill="#E9D5FF" font-size="9" font-weight="black">Pengurai</text>
             <text x="132" y="88" fill="#D8B4FE" font-size="7">(Jamur/Bakteri)</text>
@@ -924,61 +926,54 @@
         `;
       }
 
-      // 3. ANIMASI PROSES FOTOSINTESIS
+      // 3. FOTOSINTESIS
       if (data.visualId === "vis-eko-proses-fotosintesis" || lowerText.includes("fotosintesis") || lowerText.includes("klorofil")) {
         return `
           <svg class="w-full max-w-sm h-64" viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Matahari -->
             <circle cx="50" cy="45" r="22" fill="#F59E0B" class="animate-pulse-glow" />
             <path d="M75 55 L120 85" stroke="#FBBF24" stroke-width="3" stroke-linecap="round" class="animate-flow"/>
             <text x="80" y="65" fill="#FCD34D" font-size="9" font-weight="bold">Sinar Matahari</text>
-
-            <!-- Batang & Daun Tumbuhan -->
             <path d="M160 210 V110" stroke="#78350F" stroke-width="8" stroke-linecap="round"/>
             <path d="M160 130 Q220 110 210 150 Q160 170 160 130 Z" fill="#10B981" class="animate-float"/>
             <path d="M160 150 Q100 130 110 170 Q160 190 160 150 Z" fill="#059669" class="animate-float"/>
-
-            <!-- Masukan CO2 -->
             <path d="M40 140 H100" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" class="animate-flow"/>
             <text x="35" y="132" fill="#38BDF8" font-size="10" font-weight="black">Karbondioksida (CO2)</text>
-
-            <!-- Hasil Keluar O2 -->
             <path d="M210 135 H275" stroke="#34D399" stroke-width="3" stroke-linecap="round" class="animate-flow"/>
             <text x="215" y="125" fill="#34D399" font-size="10" font-weight="black">Oksigen (O2)</text>
-
-            <!-- Masukan Air (H2O) Dari Akar -->
             <path d="M160 240 V200" stroke="#60A5FA" stroke-width="4" stroke-dasharray="4 4" class="animate-pulse"/>
             <text x="170" y="230" fill="#93C5FD" font-size="9" font-weight="bold">Air (H2O) Akar</text>
           </svg>
         `;
       }
 
-      // 4. ANIMASI INTERAKSI BIOTIK & ABIOTIK (DEFAULT / GENERIC ADAPTIVE)
+      // 4. DEFAULT
       return `
         <svg class="w-full max-w-sm h-64" viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="260" cy="45" r="24" fill="#F59E0B" class="animate-pulse-glow" />
           <path d="M40 50 Q60 35 80 50 Q100 35 120 50 H40 Z" fill="#93C5FD" opacity="0.85" class="animate-float"/>
-          
-          <!-- Latar Darat & Air -->
           <path d="M0 160 Q160 130 320 160 V240 H0 Z" fill="#15803D"/>
           <path d="M180 180 Q250 160 320 180 V240 H180 Z" fill="#0284C7"/>
-
-          <!-- Pohon (Biotik) -->
           <circle cx="95" cy="120" r="26" fill="#10B981" class="animate-float"/>
           <rect x="89" y="140" width="12" height="35" fill="#451A03"/>
-
-          <!-- Tag Komponen -->
           <rect x="25" y="20" width="130" height="26" rx="6" fill="#10B981"/>
           <text x="32" y="37" fill="white" font-size="10" font-weight="black">BIOTIK (Makhluk Hidup)</text>
-
           <rect x="180" y="195" width="120" height="26" rx="6" fill="#0284C7"/>
           <text x="190" y="212" fill="white" font-size="10" font-weight="black">ABIOTIK (Benda Mati)</text>
         </svg>
       `;
     }
 
-    // --- RENDER MATERI SINKRON & PERSISI ---
+    // --- RENDER MATERI ---
     function renderMateri() {
+      if (!MATERI_MODULES || MATERI_MODULES.length === 0) {
+        document.getElementById('materi-content').innerHTML = `<div class="p-8 text-center text-slate-400 font-bold">Belum ada materi yang dimuat. Silakan unggah materi di Panel Guru.</div>`;
+        return;
+      }
+
+      if (currentSubBab >= MATERI_MODULES.length) {
+        currentSubBab = 0;
+      }
+
       const data = MATERI_MODULES[currentSubBab];
       document.getElementById('subbab-badge').innerText = `Sub-Bab ${currentSubBab + 1} Dari ${MATERI_MODULES.length}`;
       document.getElementById('subbab-title').innerText = data.title;
@@ -986,31 +981,33 @@
       const svgAnimationHtml = getAdaptiveAnimationSVG(data);
 
       let pointsHtml = '';
-      data.points.forEach(pt => {
-        pointsHtml += `
-          <div class="p-4 rounded-xl border ${pt.colorClass} space-y-2 flex-1 flex flex-col justify-between">
-            <div>
-              <h5 class="font-black text-sm mb-1 flex items-center">
-                <i class="fa-solid ${pt.icon} mr-2"></i> ${pt.title}
-              </h5>
-              <p class="text-xs text-slate-300 leading-relaxed">${pt.desc}</p>
+      if (data.points && data.points.length > 0) {
+        data.points.forEach(pt => {
+          pointsHtml += `
+            <div class="p-4 rounded-xl border ${pt.colorClass || 'border-slate-700 bg-slate-900'} space-y-2 flex-1 flex flex-col justify-between">
+              <div>
+                <h5 class="font-black text-sm mb-1 flex items-center">
+                  <i class="fa-solid ${pt.icon || 'fa-star'} mr-2"></i> ${pt.title || 'Poin Materi'}
+                </h5>
+                <p class="text-xs text-slate-300 leading-relaxed">${pt.desc || ''}</p>
+              </div>
+              <div class="mt-3 text-xs font-bold p-2.5 rounded-lg bg-slate-900/90 border border-slate-800">
+                ${pt.example || ''}
+              </div>
             </div>
-            <div class="mt-3 text-xs font-bold p-2.5 rounded-lg bg-slate-900/90 border border-slate-800">
-              ${pt.example}
-            </div>
-          </div>
-        `;
-      });
+          `;
+        });
+      }
 
       document.getElementById('materi-content').innerHTML = `
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
           <div class="space-y-4 flex flex-col justify-between">
             <div class="p-5 rounded-2xl bg-slate-900/90 border-l-4 border-amber-400 space-y-2 shadow-lg">
               <h4 class="text-amber-400 font-extrabold text-base flex items-center">
-                <i class="fa-solid fa-circle-info mr-2"></i> ${data.infoBox.header}
+                <i class="fa-solid fa-circle-info mr-2"></i> ${data.infoBox ? data.infoBox.header : 'Informasi Utama'}
               </h4>
               <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">
-                ${data.infoBox.text}
+                ${data.infoBox ? data.infoBox.text : ''}
               </p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 flex-1">
@@ -1045,20 +1042,23 @@
       }
     }
 
-    // --- FITUR UNGGAH MATERI PINTAR DENGAN sectionId AUTO-GENERATION ---
+    // --- FITUR UNGGAH MATERI BARU (GANTI UTUH MATERI SEBELUMNYA) ---
     function handleUploadMateri() {
       const fileInput = document.getElementById('upload-materi-file');
-      if (fileInput.files.length === 0) {
+      if (!fileInput.files || fileInput.files.length === 0) {
         alert("Pilih file materi (.json atau .txt) terlebih dahulu.");
         return;
       }
+
       const file = fileInput.files[0];
       const reader = new FileReader();
+
       reader.onload = function(e) {
         try {
           if (file.name.endsWith('.json')) {
             const uploadedModules = JSON.parse(e.target.result);
             if (Array.isArray(uploadedModules) && uploadedModules.length > 0) {
+              // GANTI UTUH ARRAY MATERI LAMA DENGAN MATERI BARU
               MATERI_MODULES = uploadedModules.map((mod, idx) => ({
                 sectionId: mod.sectionId || `sec-custom-${idx + 1}`,
                 visualId: mod.visualId || `vis-custom-${idx + 1}`,
@@ -1068,18 +1068,21 @@
                 points: mod.points || [],
                 visualLabel: mod.visualLabel || "Visualisasi Proses"
               }));
-              currentSubBab = 0;
+
+              currentSubBab = 0; // RESET INDEX SUBBAB KE PERTAMA
               renderMateri();
               sound.playCorrect();
-              alert(`Berhasil mengunggah ${MATERI_MODULES.length} sub-bab materi!`);
+              alert(`Berhasil! Materi lama telah diganti sepenuhnya dengan ${MATERI_MODULES.length} sub-bab baru.`);
               closeTeacherModal();
+              fileInput.value = '';
             } else {
-              alert("Format JSON materi tidak sesuai.");
+              alert("Format JSON materi tidak sesuai. Harus berupa array daftar sub-bab.");
             }
           } else {
             const textContent = e.target.result;
             const paragraphs = textContent.split(/\r?\n\r?\n/).filter(p => p.trim().length > 0);
             if (paragraphs.length > 0) {
+              // GANTI UTUH MATERI DARI FILE TXT/MD
               MATERI_MODULES = paragraphs.map((para, idx) => ({
                 sectionId: `sec-txt-${idx + 1}`,
                 visualId: `vis-txt-${idx + 1}`,
@@ -1100,17 +1103,21 @@
                 ],
                 visualLabel: `Visualisasi Proses Sub-Bab ${idx + 1}`
               }));
-              currentSubBab = 0;
+
+              currentSubBab = 0; // RESET INDEX
               renderMateri();
               sound.playCorrect();
-              alert(`Berhasil dipilah menjadi ${MATERI_MODULES.length} sub-bab!`);
+              alert(`Berhasil! File teks diproses dan menggantikan materi sebelumnya menjadi ${MATERI_MODULES.length} sub-bab.`);
               closeTeacherModal();
+              fileInput.value = '';
             }
           }
         } catch (err) {
-          alert("Gagal membaca file materi.");
+          console.error("Error reading materi:", err);
+          alert("Gagal membaca atau memproses file materi.");
         }
       };
+
       reader.readAsText(file);
     }
 
@@ -1189,7 +1196,7 @@
       sound.playClick();
     }
 
-    // --- SMART PARSER SOAL ---
+    // --- FITUR UNGGAH SOAL BARU (GANTI UTUH BANK SOAL SEBELUMNYA) ---
     function handleUploadSoal() {
       const fileInput = document.getElementById('upload-soal-file');
       if (!fileInput.files || fileInput.files.length === 0) {
@@ -1209,6 +1216,7 @@
           }
 
           if (Array.isArray(rawData) && rawData.length > 0) {
+            // GANTI UTUH BANK SOAL LAMA DENGAN SOAL BARU
             QUESTIONS_BANK = rawData.map((item, idx) => {
               const qText = item.soal || item.question || item.pertanyaan || `Soal Kuis #${idx + 1}`;
               
@@ -1250,6 +1258,7 @@
               };
             });
 
+            // RESET HITUNGAN KLAIM SELURUH KELOMPOK
             Object.values(TEAMS).forEach(t => { t.claimedCount = 0; });
 
             renderQuestionsGrid();
@@ -1258,7 +1267,7 @@
             updateHeaderDisplay();
 
             sound.playCorrect();
-            alert(`Berhasil! ${QUESTIONS_BANK.length} soal kuis telah berhasil dimuat ke dalam setiap kolom matriks kuis.`);
+            alert(`Berhasil! ${QUESTIONS_BANK.length} soal baru telah diunggah dan menggantikan bank soal lama secara keseluruhan.`);
             closeTeacherModal();
 
             fileInput.value = '';
@@ -1267,7 +1276,7 @@
           }
         } catch (err) {
           console.error("Error parsing JSON soal:", err);
-          alert("Gagal membaca atau mem-parsing file JSON soal. Pastikan format JSON sesuai.");
+          alert("Gagal membaca file JSON soal. Pastikan format JSON sesuai.");
         }
       };
 
@@ -1324,7 +1333,6 @@
       const buzzerSection = document.getElementById('buzzer-section');
 
       if (q.claimedBy && TEAMS[q.claimedBy]) {
-        // Jika soal sudah pernah dijawab/terklaim
         const team = TEAMS[q.claimedBy];
         activeTeam = team.id;
         indicator.innerText = `${team.name} (Sudah Diklaim - Bisa Diubah)`;
@@ -1335,7 +1343,6 @@
         document.getElementById('buzzer-status-banner').classList.remove('hidden');
         document.getElementById('buzzer-status-text').innerHTML = `<span style="color: ${team.color};">Soal ini saat ini diklaim oleh ${team.name}. Anda tetap bisa memilih kelompok lain di bawah ini.</span>`;
       } else {
-        // Jika soal masih baru/bersih
         activeTeam = null;
         indicator.innerText = "Belum Dipilih (Gunakan Buzzer)";
         indicator.className = "px-3 py-1 rounded-lg text-xs font-black bg-slate-800 text-slate-200 border border-slate-700";
@@ -1360,10 +1367,9 @@
       renderTeacherSummaryTable();
     }
 
-    // --- TIMER KUIS REBUTAN 30 DETIK ---
     function startTimer() {
       clearInterval(timerInterval);
-      timerSecondsLeft = 30; // UPDATED TO 30 SECONDS
+      timerSecondsLeft = 30;
       questionStartTime = Date.now();
       document.getElementById('timer-count').innerText = timerSecondsLeft;
 
@@ -1383,7 +1389,6 @@
     function triggerBuzzer(teamId) {
       sound.playBuzzer();
       
-      // Jika soal sebelumnya sudah diklaim oleh kelompok lain, kurangi jumlah klaim kelompok lama
       const q = QUESTIONS_BANK[currentActiveQuestionIndex];
       if (q && q.claimedBy && q.claimedBy !== teamId && TEAMS[q.claimedBy]) {
         TEAMS[q.claimedBy].claimedCount = Math.max(0, TEAMS[q.claimedBy].claimedCount - 1);
@@ -1428,7 +1433,7 @@
       q.options.forEach((optText, optIdx) => {
         const btn = document.createElement('button');
         const isEnabled = (answeringTeamId !== null);
-        const letter = String.fromCharCode(65 + optIdx); // A, B, C, D
+        const letter = String.fromCharCode(65 + optIdx);
 
         btn.className = `p-4 rounded-xl border text-left text-xs sm:text-sm font-semibold transition flex items-center justify-between ${isEnabled ? 'bg-slate-900/90 hover:bg-slate-800 border-amber-500/40 hover:border-amber-400 text-white cursor-pointer shadow-md' : 'bg-slate-900/40 border-slate-800/60 text-slate-500 cursor-not-allowed'}`;
         
@@ -1452,7 +1457,6 @@
       });
     }
 
-    // --- SUBMIT JAWABAN ---
     function submitAnswer(qId, chosenIdx, teamId) {
       clearInterval(timerInterval);
       const q = QUESTIONS_BANK.find(item => item.id === qId);
@@ -1483,7 +1487,6 @@
       closeQuestionModal();
     }
 
-    // --- POP UP EMOJI MODAL ENGINE ---
     function showFeedbackPopup(isCorrect, team, chosenFull) {
       const emojiContainer = document.getElementById('feedback-emoji-container');
       const title = document.getElementById('feedback-title');
@@ -1528,23 +1531,56 @@
       renderTeacherSummaryTable();
     }
 
-    function unclaimSingleQuestion(qIndex) {
+    // --- POP-UP KONFIRMASI BATALKAN KLAIM (MODERN CUSTOM MODAL) ---
+    function requestUnclaimQuestion(qIndex) {
       if (qIndex === null || qIndex < 0 || qIndex >= QUESTIONS_BANK.length) return;
       const q = QUESTIONS_BANK[qIndex];
       if (!q || !q.claimedBy) {
         alert("Soal ini belum diklaim oleh kelompok manapun.");
         return;
       }
-      if (confirm(`Batalkan klaim Soal #${q.id}?`)) {
-        if (TEAMS[q.claimedBy]) {
-          TEAMS[q.claimedBy].claimedCount = Math.max(0, TEAMS[q.claimedBy].claimedCount - 1);
-        }
-        q.claimedBy = null;
-        activeTeam = null;
-        renderQuestionsGrid();
-        renderTeacherSummaryTable();
-        closeQuestionModal();
+
+      sound.playClick();
+      pendingUnclaimIndex = qIndex;
+      const team = TEAMS[q.claimedBy];
+
+      const msgEl = document.getElementById('unclaim-dialog-msg');
+      msgEl.innerHTML = `
+        Apakah Anda yakin ingin membatalkan klaim <strong class="text-white">Soal #${q.id}</strong> yang saat ini diklaim oleh <strong style="color: ${team ? team.color : '#F59E0B'};">${team ? team.name : 'Kelompok'}</strong>?
+        <br><br>
+        <span class="text-[11px] text-slate-400">Status klaim akan dibersihkan dan nomor soal akan dapat diperebutkan kembali oleh semua kelompok.</span>
+      `;
+
+      document.getElementById('modal-confirm-unclaim').classList.remove('hidden');
+    }
+
+    function closeUnclaimConfirmModal() {
+      sound.playClick();
+      pendingUnclaimIndex = null;
+      document.getElementById('modal-confirm-unclaim').classList.add('hidden');
+    }
+
+    function executeUnclaimQuestion() {
+      if (pendingUnclaimIndex === null) return;
+      sound.playClick();
+      const q = QUESTIONS_BANK[pendingUnclaimIndex];
+
+      if (q && q.claimedBy && TEAMS[q.claimedBy]) {
+        TEAMS[q.claimedBy].claimedCount = Math.max(0, TEAMS[q.claimedBy].claimedCount - 1);
       }
+
+      if (q) {
+        q.claimedBy = null;
+      }
+
+      activeTeam = null;
+      pendingUnclaimIndex = null;
+
+      closeUnclaimConfirmModal();
+      closeQuestionModal();
+      renderQuestionsGrid();
+      renderTeacherSummaryTable();
+      renderLeaderboardBar();
     }
 
     function downloadCSVReport() {
