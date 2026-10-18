@@ -126,6 +126,9 @@
 
       <!-- Control Toolbar -->
       <div class="flex items-center space-x-2">
+        <button id="btn-pause-global" onclick="togglePauseGame()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 transition font-bold text-xs flex items-center" title="Pause / Resume Kuis">
+          <i id="global-pause-icon" class="fa-solid fa-pause mr-1.5"></i> <span id="global-pause-text">Pause</span>
+        </button>
         <button id="audio-toggle" onclick="toggleAudio()" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-yellow-400 border border-slate-700 transition" title="Mute/Unmute SFX">
           <i id="audio-icon" class="fa-solid fa-volume-high"></i>
         </button>
@@ -259,8 +262,13 @@
         <span id="modal-q-number" class="px-3.5 py-1 rounded-full text-xs font-black font-display bg-amber-500 text-slate-950 uppercase tracking-wider">
           SOAL REBUTAN #1
         </span>
-        <div id="modal-q-timer" class="text-sm font-black font-display text-amber-400 bg-amber-950/80 border border-amber-800/80 px-3.5 py-1 rounded-xl flex items-center">
-          <i class="fa-solid fa-stopwatch mr-2 animate-spin"></i><span id="timer-count">30</span> Detik
+        <div class="flex items-center space-x-2">
+          <button id="btn-modal-pause" onclick="togglePauseGame()" class="px-3 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 text-xs font-bold transition flex items-center">
+            <i id="modal-pause-icon" class="fa-solid fa-pause mr-1"></i> <span id="modal-pause-text">Pause</span>
+          </button>
+          <div id="modal-q-timer" class="text-sm font-black font-display text-amber-400 bg-amber-950/80 border border-amber-800/80 px-3.5 py-1 rounded-xl flex items-center">
+            <i class="fa-solid fa-stopwatch mr-2 animate-spin"></i><span id="timer-count">30</span> Detik
+          </div>
         </div>
       </div>
 
@@ -438,8 +446,8 @@
       </div>
 
       <div class="flex items-center justify-between pt-4 border-t border-slate-800">
-        <button onclick="confirmResetQuestions()" class="px-4 py-2.5 rounded-xl bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-800/60 text-xs font-bold transition">
-          <i class="fa-solid fa-trash-can mr-1.5"></i>Reset Skor & Klaim
+        <button onclick="confirmResetQuestions()" class="px-4 py-2.5 rounded-xl bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-800/60 text-xs font-bold transition flex items-center">
+          <i class="fa-solid fa-trash-can mr-1.5"></i>Hapus Semua / Reset Total
         </button>
         <button onclick="closeTeacherModal()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs">
           Tutup Panel
@@ -781,6 +789,28 @@
       renderTeacherSummaryTable();
       updateHeaderDisplay();
     });
+
+    function togglePauseGame() {
+      sound.playClick();
+      isGamePaused = !isGamePaused;
+      
+      const globalIcon = document.getElementById('global-pause-icon');
+      const globalText = document.getElementById('global-pause-text');
+      const modalIcon = document.getElementById('modal-pause-icon');
+      const modalText = document.getElementById('modal-pause-text');
+
+      if (isGamePaused) {
+        if (globalIcon) globalIcon.className = "fa-solid fa-play mr-1.5";
+        if (globalText) globalText.innerText = "Resume";
+        if (modalIcon) modalIcon.className = "fa-solid fa-play mr-1";
+        if (modalText) modalText.innerText = "Resume";
+      } else {
+        if (globalIcon) globalIcon.className = "fa-solid fa-pause mr-1.5";
+        if (globalText) globalText.innerText = "Pause";
+        if (modalIcon) modalIcon.className = "fa-solid fa-pause mr-1";
+        if (modalText) modalText.innerText = "Pause";
+      }
+    }
 
     function switchTab(tabName) {
       sound.playClick();
@@ -1297,13 +1327,13 @@
         // Jika soal sudah pernah dijawab/terklaim
         const team = TEAMS[q.claimedBy];
         activeTeam = team.id;
-        indicator.innerText = `${team.name} (Sudah Diklaim)`;
+        indicator.innerText = `${team.name} (Sudah Diklaim - Bisa Diubah)`;
         indicator.style.backgroundColor = team.color;
         indicator.className = "px-3 py-1 rounded-lg text-xs font-black text-white shadow-md";
         
-        buzzerSection.classList.add('hidden');
+        buzzerSection.classList.remove('hidden');
         document.getElementById('buzzer-status-banner').classList.remove('hidden');
-        document.getElementById('buzzer-status-text').innerHTML = `<span style="color: ${team.color};">Soal ini sudah terklaim oleh ${team.name}. Jawaban tidak dapat diubah lagi!</span>`;
+        document.getElementById('buzzer-status-text').innerHTML = `<span style="color: ${team.color};">Soal ini saat ini diklaim oleh ${team.name}. Anda tetap bisa memilih kelompok lain di bawah ini.</span>`;
       } else {
         // Jika soal masih baru/bersih
         activeTeam = null;
@@ -1316,15 +1346,10 @@
       }
 
       renderQuickTeamSelectors();
-      renderOptions(q, activeTeam, !!q.claimedBy);
+      renderOptions(q, activeTeam, false);
       document.getElementById('modal-question').classList.remove('hidden');
       
-      if (!q.claimedBy) {
-        startTimer();
-      } else {
-        clearInterval(timerInterval);
-        document.getElementById('timer-count').innerText = "0";
-      }
+      startTimer();
     }
 
     function closeQuestionModal() {
@@ -1356,8 +1381,14 @@
     }
 
     function triggerBuzzer(teamId) {
-      if (activeTeam !== null) return;
       sound.playBuzzer();
+      
+      // Jika soal sebelumnya sudah diklaim oleh kelompok lain, kurangi jumlah klaim kelompok lama
+      const q = QUESTIONS_BANK[currentActiveQuestionIndex];
+      if (q && q.claimedBy && q.claimedBy !== teamId && TEAMS[q.claimedBy]) {
+        TEAMS[q.claimedBy].claimedCount = Math.max(0, TEAMS[q.claimedBy].claimedCount - 1);
+      }
+
       activeTeam = teamId;
       const team = TEAMS[teamId];
 
@@ -1371,13 +1402,12 @@
       document.getElementById('buzzer-status-text').innerHTML = `<span style="color: ${team.color};">${team.name} BERHASIL MENDAHULUI BUZZER! Silakan pilih jawaban.</span>`;
 
       renderQuickTeamSelectors();
-      renderOptions(QUESTIONS_BANK[currentActiveQuestionIndex], teamId, false);
+      renderOptions(q, teamId, false);
     }
 
     function renderQuickTeamSelectors() {
       const container = document.getElementById('team-quick-selectors');
       container.innerHTML = '';
-      const isAlreadyClaimed = !!QUESTIONS_BANK[currentActiveQuestionIndex].claimedBy;
 
       Object.values(TEAMS).forEach(team => {
         const btn = document.createElement('button');
@@ -1386,13 +1416,7 @@
         btn.style.backgroundColor = team.color;
         btn.style.color = '#FFFFFF';
         btn.innerHTML = `<span class="w-2 h-2 rounded-full bg-white"></span><span>${team.name}</span>`;
-        
-        if (!isAlreadyClaimed) {
-          btn.onclick = () => { if (!activeTeam) triggerBuzzer(team.id); };
-        } else {
-          btn.disabled = true;
-          btn.classList.add('cursor-not-allowed', 'opacity-50');
-        }
+        btn.onclick = () => triggerBuzzer(team.id);
         container.appendChild(btn);
       });
     }
@@ -1403,15 +1427,13 @@
       
       q.options.forEach((optText, optIdx) => {
         const btn = document.createElement('button');
-        const isEnabled = (answeringTeamId !== null) && !isAlreadyClaimed;
+        const isEnabled = (answeringTeamId !== null);
         const letter = String.fromCharCode(65 + optIdx); // A, B, C, D
 
         btn.className = `p-4 rounded-xl border text-left text-xs sm:text-sm font-semibold transition flex items-center justify-between ${isEnabled ? 'bg-slate-900/90 hover:bg-slate-800 border-amber-500/40 hover:border-amber-400 text-white cursor-pointer shadow-md' : 'bg-slate-900/40 border-slate-800/60 text-slate-500 cursor-not-allowed'}`;
         
         let labelStatus = 'Buzzer Dulu';
-        if (isAlreadyClaimed) {
-          labelStatus = 'Terklaim';
-        } else if (isEnabled) {
+        if (isEnabled) {
           labelStatus = 'Pilih';
         }
 
@@ -1440,7 +1462,10 @@
       const chosenLetter = String.fromCharCode(65 + chosenIdx);
       const chosenText = q.options[chosenIdx];
 
-      if (!q.claimedBy) {
+      if (q.claimedBy !== teamId) {
+        if (q.claimedBy && TEAMS[q.claimedBy]) {
+          TEAMS[q.claimedBy].claimedCount = Math.max(0, TEAMS[q.claimedBy].claimedCount - 1);
+        }
         q.claimedBy = teamId;
         team.claimedCount += 1;
       }
@@ -1504,9 +1529,10 @@
     }
 
     function unclaimSingleQuestion(qIndex) {
+      if (qIndex === null || qIndex < 0 || qIndex >= QUESTIONS_BANK.length) return;
       const q = QUESTIONS_BANK[qIndex];
       if (!q || !q.claimedBy) {
-        alert("Soal ini belum diklaim.");
+        alert("Soal ini belum diklaim oleh kelompok manapun.");
         return;
       }
       if (confirm(`Batalkan klaim Soal #${q.id}?`)) {
@@ -1514,6 +1540,7 @@
           TEAMS[q.claimedBy].claimedCount = Math.max(0, TEAMS[q.claimedBy].claimedCount - 1);
         }
         q.claimedBy = null;
+        activeTeam = null;
         renderQuestionsGrid();
         renderTeacherSummaryTable();
         closeQuestionModal();
@@ -1605,15 +1632,16 @@
     }
 
     function confirmResetQuestions() {
-      if (confirm("Reset seluruh klaim soal dan skor ke 0?")) {
+      if (confirm("Hapus seluruh klaim soal dan reset skor seluruh kelompok ke 0?")) {
         QUESTIONS_BANK.forEach(q => { q.claimedBy = null; });
         Object.values(TEAMS).forEach(t => { t.score = 0; t.claimedCount = 0; });
+        activeTeam = null;
         sound.playClick();
         renderTeacherSummaryTable();
         renderQuestionsGrid();
         renderLeaderboardBar();
         closeTeacherModal();
-        alert("Sesi berhasil di-reset.");
+        alert("Seluruh klaim soal dan skor telah dihapus / di-reset total.");
       }
     }
 
