@@ -126,7 +126,7 @@
 
       <!-- Control Toolbar -->
       <div class="flex items-center space-x-2">
-        <button id="btn-pause-global" onclick="togglePauseGame()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 transition font-bold text-xs flex items-center" title="Pause / Resume Kuis">
+        <button id="btn-pause-global" onclick="togglePauseGame()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 transition font-bold text-xs flex items-center shadow-sm" title="Pause / Resume Kuis (Khusus Guru)">
           <i id="global-pause-icon" class="fa-solid fa-pause mr-1.5"></i> <span id="global-pause-text">Pause</span>
         </button>
         <button id="audio-toggle" onclick="toggleAudio()" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-yellow-400 border border-slate-700 transition" title="Mute/Unmute SFX">
@@ -161,7 +161,7 @@
       <div class="flex flex-col md:flex-row items-center justify-between glass-card p-5 sm:p-6 rounded-2xl gap-4">
         <div>
           <span id="subbab-badge" class="px-3.5 py-1 rounded-full text-xs font-black bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase tracking-widest font-display">
-            Sub-Bab 1 Dari 4
+            Sub-Bab 1 Dari 5
           </span>
           <h2 id="subbab-title" class="text-2xl sm:text-3xl font-black font-display text-white mt-1.5">
             Pengertian & Komponen Ekosistem
@@ -283,19 +283,19 @@
           ⚡ TEKAN BUZZER KELOMPOK UNTUK MENJAWAB (+100 BENAR / -20 SALAH) ⚡
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-          <button onclick="triggerBuzzer('red')" class="p-3 rounded-xl bg-teamRed hover:brightness-110 text-white font-black text-xs shadow-lg transition active:scale-95 flex flex-col items-center justify-center gap-1 glow-red">
+          <button id="buzzer-btn-red" onclick="triggerBuzzer('red')" class="buzzer-btn p-3 rounded-xl bg-teamRed hover:brightness-110 text-white font-black text-xs shadow-lg transition active:scale-95 flex flex-col items-center justify-center gap-1 glow-red">
             <i class="fa-solid fa-hand-pointer text-base"></i> Merah
           </button>
-          <button onclick="triggerBuzzer('green')" class="p-3 rounded-xl bg-teamGreen hover:brightness-110 text-white font-black text-xs shadow-lg transition active:scale-95 flex flex-col items-center justify-center gap-1 glow-green">
+          <button id="buzzer-btn-green" onclick="triggerBuzzer('green')" class="buzzer-btn p-3 rounded-xl bg-teamGreen hover:brightness-110 text-white font-black text-xs shadow-lg transition active:scale-95 flex flex-col items-center justify-center gap-1 glow-green">
             <i class="fa-solid fa-hand-pointer text-base"></i> Hijau
           </button>
-          <button onclick="triggerBuzzer('orange')" class="p-3 rounded-xl bg-teamOrange hover:brightness-110 text-white font-black text-xs shadow-lg transition active:scale-95 flex flex-col items-center justify-center gap-1 glow-orange">
+          <button id="buzzer-btn-orange" onclick="triggerBuzzer('orange')" class="buzzer-btn p-3 rounded-xl bg-teamOrange hover:brightness-110 text-white font-black text-xs shadow-lg transition active:scale-95 flex flex-col items-center justify-center gap-1 glow-orange">
             <i class="fa-solid fa-hand-pointer text-base"></i> Oranye
           </button>
-          <button onclick="triggerBuzzer('blue')" class="p-3 rounded-xl bg-teamBlue hover:brightness-110 text-white font-black text-xs shadow-lg transition active:scale-95 flex flex-col items-center justify-center gap-1 glow-blue">
+          <button id="buzzer-btn-blue" onclick="triggerBuzzer('blue')" class="buzzer-btn p-3 rounded-xl bg-teamBlue hover:brightness-110 text-white font-black text-xs shadow-lg transition active:scale-95 flex flex-col items-center justify-center gap-1 glow-blue">
             <i class="fa-solid fa-hand-pointer text-base"></i> Biru
           </button>
-          <button onclick="triggerBuzzer('purple')" class="p-3 rounded-xl bg-teamPurple hover:brightness-110 text-white font-black text-xs shadow-lg transition active:scale-95 flex flex-col items-center justify-center gap-1 glow-purple">
+          <button id="buzzer-btn-purple" onclick="triggerBuzzer('purple')" class="buzzer-btn p-3 rounded-xl bg-teamPurple hover:brightness-110 text-white font-black text-xs shadow-lg transition active:scale-95 flex flex-col items-center justify-center gap-1 glow-purple">
             <i class="fa-solid fa-hand-pointer text-base"></i> Ungu
           </button>
         </div>
@@ -311,7 +311,7 @@
 
       <div class="flex items-center justify-between pt-4 border-t border-slate-800">
         <button onclick="requestUnclaimQuestion(currentActiveQuestionIndex)" class="px-3.5 py-2 rounded-xl bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-800/60 text-xs font-bold transition flex items-center shadow-md">
-          <i class="fa-solid fa-ban mr-1.5 text-rose-400"></i>Batalkan / Bersihkan Klaim Soal Ini
+          <i class="fa-solid fa-ban mr-1.5 text-rose-400"></i>Batalkan Klaim Nomor Soal Ini
         </button>
         <span class="text-xs text-slate-400 font-bold">Arena for Champions Engine</span>
       </div>
@@ -347,31 +347,92 @@
     </div>
   </div>
 
-  <!-- MODAL POP-UP KONFIRMASI BATALKAN KLAIM (HIGH-TECH & VISUAL MENARIK) -->
-  <div id="modal-confirm-unclaim" class="fixed inset-0 z-[60] bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4">
-    <div class="glass-card max-w-md w-full rounded-3xl p-6 sm:p-8 text-center relative shadow-2xl border border-rose-500/40 glow-red animate-pop">
+  <!-- POP-UP INTERAKTIF: NOTIFIKASI UNGGAH SUKSES (MATERI / SOAL) -->
+  <div id="modal-upload-success" class="fixed inset-0 z-[70] bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card max-w-md w-full rounded-3xl p-6 sm:p-8 text-center relative shadow-2xl border border-emerald-500/50 glow-green animate-pop">
       
-      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-500/20 to-red-600/30 border border-rose-500/40 text-rose-400 flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg animate-bounce">
-        <i class="fa-solid fa-triangle-exclamation"></i>
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-600/30 border border-emerald-500/40 text-emerald-400 flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg animate-bounce">
+        <i id="upload-success-icon" class="fa-solid fa-cloud-arrow-up"></i>
       </div>
 
-      <h3 class="text-xl sm:text-2xl font-black font-display text-white mb-2">
-        Konfirmasi Batalkan Klaim
+      <h3 id="upload-success-title" class="text-xl sm:text-2xl font-black font-display text-white mb-2">
+        Unggah Berhasil!
       </h3>
 
-      <p id="unclaim-dialog-msg" class="text-xs text-slate-300 leading-relaxed mb-6">
-        Apakah Anda yakin ingin membatalkan status klaim untuk soal ini? Soal akan kembali bersih dan terbuka untuk direbutkan kembali.
+      <p id="upload-success-msg" class="text-xs text-slate-300 leading-relaxed mb-6">
+        Konten baru berhasil diunggah dan siap digunakan dalam aplikasi.
       </p>
+
+      <button onclick="closeUploadSuccessModal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg transition">
+        <i class="fa-solid fa-check mr-1.5"></i>Mengerti & Lanjutkan
+      </button>
+
+    </div>
+  </div>
+
+  <!-- MODAL POP-UP KONFIRMASI BATALKAN KLAIM (SINGLE / ALL TEAM) -->
+  <div id="modal-confirm-unclaim" class="fixed inset-0 z-[60] bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card max-w-md w-full rounded-3xl p-6 sm:p-8 text-center relative shadow-2xl border border-rose-500/50 glow-red animate-pop">
+      
+      <div class="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-rose-500/20 to-red-600/30 border border-rose-500/50 text-rose-400 flex items-center justify-center text-3xl mx-auto mb-4 shadow-xl">
+        <i class="fa-solid fa-rotate-left animate-spin" style="animation-duration: 6s;"></i>
+        <span class="absolute -top-1 -right-1 flex h-4 w-4">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-4 w-4 bg-rose-500"></span>
+        </span>
+      </div>
+
+      <h3 id="unclaim-modal-title" class="text-xl sm:text-2xl font-black font-display text-white mb-1">
+        Pembatalan Klaim Soal
+      </h3>
+      <p id="unclaim-modal-subtitle" class="text-[11px] font-bold text-rose-400 uppercase tracking-widest mb-4">
+        Tindakan Mengembalikan Soal
+      </p>
+
+      <!-- Dynamic Info Card -->
+      <div id="unclaim-info-card" class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 text-left space-y-2 mb-5">
+        <div class="flex items-center justify-between text-xs font-bold border-b border-slate-800/80 pb-2">
+          <span class="text-slate-400">Target / Kelompok:</span>
+          <span id="unclaim-team-badge" class="px-2.5 py-0.5 rounded-full text-[11px] font-black text-white bg-slate-800">
+            -
+          </span>
+        </div>
+        <div class="flex items-center justify-between text-xs font-bold pt-1">
+          <span class="text-slate-400">Status Soal:</span>
+          <span id="unclaim-penalty-text" class="text-amber-400 font-mono font-black">RESET TERKLAIM</span>
+        </div>
+        <p id="unclaim-dialog-msg" class="text-[11px] text-slate-300 leading-relaxed pt-2 border-t border-slate-800/80">
+          Membatalkan klaim akan mereset status soal kembali menjadi bersih sehingga dapat direbutkan ulang oleh kelompok mana saja.
+        </p>
+      </div>
 
       <div class="flex items-center justify-center space-x-3">
         <button onclick="closeUnclaimConfirmModal()" class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-slate-700 transition flex-1">
           <i class="fa-solid fa-xmark mr-1.5"></i>Batal
         </button>
-        <button onclick="executeUnclaimQuestion()" class="px-5 py-3 rounded-xl bg-gradient-to-r from-rose-600 to-red-500 hover:from-rose-500 hover:to-red-400 text-white font-black text-xs shadow-lg shadow-rose-600/30 transition flex-1">
-          <i class="fa-solid fa-check mr-1.5"></i>Ya, Batalkan Klaim
+        <button id="btn-execute-unclaim" onclick="executeUnclaimAction()" class="px-5 py-3 rounded-xl bg-gradient-to-r from-rose-600 to-red-500 hover:from-rose-500 hover:to-red-400 text-white font-black text-xs shadow-lg shadow-rose-600/30 transition flex-1">
+          <i class="fa-solid fa-rotate-left mr-1.5"></i>Proses Pembatalan
         </button>
       </div>
 
+    </div>
+  </div>
+
+  <!-- POP-UP NOTIFIKASI SOAL DIHENTIKAN SEMENTARA (PAUSE GURU) -->
+  <div id="modal-pause-notice" class="fixed inset-0 z-[80] bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card max-w-md w-full rounded-3xl p-6 sm:p-8 text-center relative shadow-2xl border border-amber-500/50 glow-gold animate-pop">
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/20 to-yellow-600/30 border border-amber-500/40 text-amber-400 flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg animate-pulse">
+        <i class="fa-solid fa-circle-pause"></i>
+      </div>
+      <h3 class="text-xl sm:text-2xl font-black font-display text-white mb-2">
+        Kuis Dihentikan Sementara
+      </h3>
+      <p class="text-xs text-slate-300 leading-relaxed mb-6">
+        Soal dihentikan sementara oleh guru (Mode Pause Aktif). Silakan tunggu instruksi selanjutnya dari guru Anda untuk melanjutkan kuis.
+      </p>
+      <button onclick="closePauseNoticeModal()" class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg transition">
+        <i class="fa-solid fa-check mr-1.5"></i>Mengerti
+      </button>
     </div>
   </div>
 
@@ -389,7 +450,7 @@
         </div>
         <div>
           <h2 class="text-xl font-bold font-display text-white">Panel Guru & Pengelolaan Konten</h2>
-          <p class="text-xs text-slate-400">Unggah File Materi (.json/.txt) & Bank Soal Kustom (.json) dengan Tata Letak Otomatis.</p>
+          <p class="text-xs text-slate-400">Unggah File Materi (.json/.txt) & Bank Soal Kustom (.json) dengan Batalkan Klaim Langsung.</p>
         </div>
       </div>
 
@@ -448,11 +509,11 @@
         </div>
       </div>
 
-      <!-- REKAPITULASI & DOWNLOAD CSV -->
+      <!-- REKAPITULASI, BATALKAN KLAIM PER KELOMPOK & DOWNLOAD CSV -->
       <div class="mb-6 overflow-x-auto">
         <div class="flex items-center justify-between mb-3">
           <h3 class="text-xs font-black text-slate-300 uppercase tracking-wider flex items-center">
-            <i class="fa-solid fa-chart-simple mr-2 text-amber-400"></i> Rekapitulasi & Unduh CSV
+            <i class="fa-solid fa-chart-simple mr-2 text-amber-400"></i> Rekapitulasi & Pembatalan Klaim Kelompok
           </h3>
           <button onclick="downloadCSVReport()" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black shadow flex items-center">
             <i class="fa-solid fa-file-csv mr-1.5 text-base"></i> Unduh Rekap (.CSV)
@@ -464,7 +525,8 @@
               <th class="p-3">Kelompok</th>
               <th class="p-3">Soal Terklaim</th>
               <th class="p-3 text-center">Total Skor</th>
-              <th class="p-3 text-right">Penyesuaian Manual</th>
+              <th class="p-3 text-center">Batalkan Klaim Semua</th>
+              <th class="p-3 text-right">Skor Manual</th>
             </tr>
           </thead>
           <tbody id="teacher-summary-table">
@@ -655,170 +717,225 @@
     let currentSubBab = 0;
     let isGamePaused = false;
     let currentActiveQuestionIndex = null;
+    
+    // Unclaim state tracker
+    let unclaimActionType = null; // 'single' atau 'team'
     let pendingUnclaimIndex = null;
+    let pendingUnclaimTeamKey = null;
+
     let timerInterval = null;
     let timerSecondsLeft = 30; // 30 Detik Timer
-    let questionStartTime = 0;
 
     let appConfig = {
       kelas: "Kelas 5 SD/MI",
       mapel: "Ekosistem & Lingkungan"
     };
 
-    // MODUL MATERI DEFAULT
+    // MODUL MATERI DEFAULT: 5 SUB-BAB EKOSISTEM UTUH
     let MATERI_MODULES = [
       {
-        sectionId: "sec-eko-komponen-1",
-        visualId: "vis-eko-biotik-abiotik",
+        sectionId: "sec-bab-01",
+        visualId: "vis-biotik-abiotik",
         subBab: 1,
         title: "Pengertian & Komponen Ekosistem",
         infoBox: {
           header: "Apa Itu Ekosistem?",
-          text: "Ekosistem adalah <strong>hubungan timbal balik (saling mempengaruhi)</strong> antara makhluk hidup dengan lingkungan sekitarnya. Komponen Biotik (hidup) bergantung pada Komponen Abiotik (tak hidup)."
+          text: "Ekosistem adalah <strong>hubungan timbal balik (saling mempengaruhi)</strong> antara makhluk hidup dengan lingkungan sekitarnya. Tidak ada makhluk hidup yang dapat hidup sendiri di alam."
         },
         points: [
           {
             icon: "fa-bug",
             title: "Komponen Biotik",
             colorClass: "border-emerald-500/30 text-emerald-400 bg-emerald-950/20",
-            desc: "Semua benda <strong>HIDUP</strong> di dalam ekosistem.",
+            desc: "Semua komponen bernyawa (benda <strong>HIDUP</strong>) di dalam ekosistem.",
             example: "Contoh: Manusia, Hewan, Tumbuhan, Jamur, Bakteri."
           },
           {
             icon: "fa-sun",
             title: "Komponen Abiotik",
             colorClass: "border-sky-500/30 text-sky-400 bg-sky-950/20",
-            desc: "Semua benda <strong>TAK HIDUP</strong> pendukung kehidupan.",
-            example: "Contoh: Cahaya Matahari, Air, Udara, Tanah, Suhu."
+            desc: "Komponen lingkungan fisik & kimia (benda <strong>TAK HIDUP</strong>) pendukung kehidupan.",
+            example: "Contoh: Sinar Matahari, Air, Udara, Tanah, Suhu."
           }
         ],
-        visualLabel: "Visualisasi Interaksi Biotik & Abiotik"
+        visualLabel: "Interaksi Komponen Biotik & Abiotik"
       },
       {
-        sectionId: "sec-eko-rantai-2",
-        visualId: "vis-eko-rantai-makanan",
+        sectionId: "sec-bab-02",
+        visualId: "vis-jenis-ekosistem",
         subBab: 2,
-        title: "Rantai Makanan & Jaring-Jaring Makanan",
+        title: "Jenis-Jenis Ekosistem",
         infoBox: {
-          header: "Aliran Energi Ekosistem",
-          text: "Rantai makanan adalah proses <strong>makan dan dimakan secara berurutan</strong>. Energi berpindah secara sistematis: Sinar Matahari ➔ Padi (Produsen) ➔ Belalang (Konsumen I) ➔ Katak (Konsumen II) ➔ Pengurai."
+          header: "Dua Kelompok Utama Ekosistem",
+          text: "Ekosistem terbagi menjadi <strong>Ekosistem Alami</strong> yang terbentuk secara alamiah, dan <strong>Ekosistem Buatan</strong> yang sengaja diciptakan oleh manusia untuk memenuhi kebutuhan hidup."
+        },
+        points: [
+          {
+            icon: "fa-tree",
+            title: "Ekosistem Alami",
+            colorClass: "border-green-500/30 text-green-400 bg-green-950/20",
+            desc: "Terbentuk secara alami tanpa campur tangan manusia.",
+            example: "Darat: Hutan Hujan, Sabana. Air: Sungai, Laut."
+          },
+          {
+            icon: "fa-tractor",
+            title: "Ekosistem Buatan",
+            colorClass: "border-amber-500/30 text-amber-400 bg-amber-950/20",
+            desc: "Sengaja dibuat oleh manusia untuk tujuan tertentu.",
+            example: "Contoh: Sawah, Akuarium, Kolam, Bendungan."
+          }
+        ],
+        visualLabel: "Perbandingan Ekosistem Alami & Buatan"
+      },
+      {
+        sectionId: "sec-bab-03",
+        visualId: "vis-rantai-makanan",
+        subBab: 3,
+        title: "Rantai & Jaring-Jaring Makanan",
+        infoBox: {
+          header: "Peristiwa Makan dan Dimakan",
+          text: "Proses perpindahan energi melalui peristiwa makan dan dimakan. Terdiri dari <strong>Produsen</strong> (pembuat makanan), <strong>Konsumen</strong> (pemakan), dan <strong>Pengurai/Dekomposer</strong>."
         },
         points: [
           {
             icon: "fa-seedling",
             title: "Produsen & Konsumen",
-            colorClass: "border-amber-500/30 text-amber-400 bg-amber-950/20",
-            desc: "Tumbuhan (produsen) memproduksi makanan sendiri lewat fotosintesis yang dimakan konsumen.",
-            example: "Urutan: Padi ➔ Belalang ➔ Katak."
+            colorClass: "border-lime-500/30 text-lime-400 bg-lime-950/20",
+            desc: "Tumbuhan hijau (Produsen) memproduksi makanan sendiri yang dimakan oleh Konsumen (I, II, III/Puncak).",
+            example: "Urutan: Padi ➔ Belalang ➔ Katak ➔ Ular."
           },
           {
-            icon: "fa-bacteria",
+            icon: "fa-recycle",
             title: "Pengurai (Dekomposer)",
             colorClass: "border-purple-500/30 text-purple-400 bg-purple-950/20",
-            desc: "Organisme yang menguraikan bangkai makhluk hidup kembali menjadi nutrisi tanah.",
-            example: "Contoh: Jamur kayu & Bakteri pembusuk."
+            desc: "Menguraikan sisa makhluk hidup mati menjadi zat hara untuk menyuburkan tanah.",
+            example: "Contoh: Jamur, Bakteri pembusuk, Cacing."
           }
         ],
-        visualLabel: "Urutan Proses Rantai Makanan Berantai"
+        visualLabel: "Aliran Energi Rantai Makanan Sawah"
       },
       {
-        sectionId: "sec-eko-fotosintesis-3",
-        visualId: "vis-eko-proses-fotosintesis",
-        subBab: 3,
-        title: "Proses Fotosintesis Pada Tumbuhan",
-        infoBox: {
-          header: "Pembuatan Makanan Mandiri",
-          text: "Fotosintesis adalah proses tumbuhan hijau memasak makanan sendiri. Tumbuhan menyerap <strong>Air ($H_2O$) dari tanah</strong> dan <strong>Karbondioksida ($CO_2$) dari udara</strong> dengan bantuan <strong>Cahaya Matahari</strong> menghasilkan <strong>Glukosa & Oksigen ($O_2$)</strong>."
-        },
-        points: [
-          {
-            icon: "fa-leaf",
-            title: "Klorofil & Cahaya",
-            colorClass: "border-green-500/30 text-green-400 bg-green-950/20",
-            desc: "Zat hijau daun (klorofil) menangkap energi radiasi sinar matahari.",
-            example: "Bahan Masuk: Air + $CO_2$ + Cahaya."
-          },
-          {
-            icon: "fa-wind",
-            title: "Hasil Utama Fotosintesis",
-            colorClass: "border-teal-500/30 text-teal-400 bg-teal-950/20",
-            desc: "Menghasilkan Oksigen segar yang dihirup manusia dan karbohidrat bagi tumbuhan.",
-            example: "Hasil Keluar: Glukosa + Oksigen ($O_2$)."
-          }
-        ],
-        visualLabel: "Urutan Langkah Proses Fotosintesis Tumbuhan"
-      },
-      {
-        sectionId: "sec-eko-siklusair-4",
-        visualId: "vis-eko-siklus-air",
+        sectionId: "sec-bab-04",
+        visualId: "vis-simbiosis",
         subBab: 4,
-        title: "Siklus Air & Keseimbangan Lingkungan",
+        title: "Hubungan Antarmakhluk Hidup (Simbiosis)",
         infoBox: {
-          header: "Daur Air Bumi",
-          text: "Siklus air adalah sirkulasi air berkelanjutan. Panas matahari menyebabkan <strong>Evaporasi (Penguapan)</strong> ➔ Membentuk Awan melalui <strong>Kondensasi (Pengembunan)</strong> ➔ Turun <strong>Presipitasi (Hujan)</strong> ➔ Air meresap ke tanah <strong>(Infiltrasi)</strong>."
+          header: "Bentuk-Bentuk Simbiosis",
+          text: "Simbiosis adalah hubungan erat dan khas antara dua jenis makhluk hidup yang hidup bersama di dalam suatu ekosistem."
         },
         points: [
           {
-            icon: "fa-cloud-sun-rain",
-            title: "Evaporasi & Kondensasi",
-            colorClass: "border-blue-500/30 text-blue-400 bg-blue-950/20",
-            desc: "Air laut/danau menguap karena sinar matahari lalu berkumpul menjadi awan tebal.",
-            example: "Langkah 1 & 2: Penguapan ➔ Pembentukan Awan."
+            icon: "fa-handshake",
+            title: "Mutualisme & Komensalisme",
+            colorClass: "border-teal-500/30 text-teal-400 bg-teal-950/20",
+            desc: "Mutualisme (+/+): Saling menguntungkan.<br>Komensalisme (+/0): Satu untung, satu tak dirugikan.",
+            example: "Contoh: Lebah & Bunga (+/+) | Anggrek & Pohon Inang (+/0)."
           },
           {
-            icon: "fa-droplet",
-            title: "Presipitasi & Infiltrasi",
-            colorClass: "border-cyan-500/30 text-cyan-400 bg-cyan-950/20",
-            desc: "Awan jenuh menurunkan butir air hujan yang diserap tanah dan kembali ke laut.",
-            example: "Langkah 3 & 4: Hujan ➔ Penyerapan Tanah."
+            icon: "fa-biohazard",
+            title: "Simbiosis Parasitisme (+/-)",
+            colorClass: "border-rose-500/30 text-rose-400 bg-rose-950/20",
+            desc: "Satu pihak diuntungkan, sedangkan pihak lain dirugikan.",
+            example: "Contoh: Benalu & Pohon Inang, Nyamuk & Manusia."
           }
         ],
-        visualLabel: "Urutan Tahapan Daur/Siklus Air"
+        visualLabel: "Visualisasi Bentuk Simbiosis Organisme"
+      },
+      {
+        sectionId: "sec-bab-05",
+        visualId: "vis-keseimbangan-ekosistem",
+        subBab: 5,
+        title: "Keseimbangan Ekosistem & Peran Manusia",
+        infoBox: {
+          header: "Menjaga Keseimbangan Alam",
+          text: "Ekosistem dikatakan seimbang jika populasi produsen dan konsumen stabil. Aktivitas manusia sangat mempengaruhi kelestarian dan keseimbangan lingkungan."
+        },
+        points: [
+          {
+            icon: "fa-triangle-exclamation",
+            title: "Ancaman Keseimbangan",
+            colorClass: "border-red-500/30 text-red-400 bg-red-950/20",
+            desc: "Disebabkan bencana alam maupun aktivitas manusia yang merusak.",
+            example: "Penebangan liar, Perburuan liar, Pencemaran sampah & limbah."
+          },
+          {
+            icon: "fa-hands-holding-child",
+            title: "Upaya Pelestarian",
+            colorClass: "border-emerald-500/30 text-emerald-400 bg-emerald-950/20",
+            desc: "Langkah nyata menjaga kelestarian ekosistem dan lingkungan hidup.",
+            example: "Reboisasi (penanaman kembali), Tebang pilih, Penangkaran satwa."
+          }
+        ],
+        visualLabel: "Kelestarian & Keseimbangan Lingkungan"
       }
     ];
 
-    // BANK SOAL DEFAULT
-    let QUESTIONS_BANK = [];
-    for (let i = 1; i <= 50; i++) {
-      let qText = `Soal kuis rebutan #${i}: Pertanyaan khusus mengenai konsep pembelajaran aktif?`;
-      let opts = ["Pilihan Jawaban A (Benar)", "Pilihan Jawaban B", "Pilihan Jawaban C", "Pilihan Jawaban D"];
-      let correctIdx = 0;
+    // BANK SOAL DEFAULT: 50 SOAL EKOSISTEM UTUH
+    const DEFAULT_50_EKOSISTEM_SOAL = [
+      { id: 1, question: "Hubungan timbal balik antara makhluk hidup dengan lingkungannya disebut...", options: ["Populasi", "Komunitas", "Ekosistem", "Biosfer"], correct: 2 },
+      { id: 2, question: "Komponen ekosistem yang terdiri dari semua benda hidup di dalamnya disebut...", options: ["Komponen Abiotik", "Komponen Biotik", "Komponen Fisika", "Komponen Kimia"], correct: 1 },
+      { id: 3, question: "Berikut ini yang merupakan contoh dari komponen abiotik adalah...", options: ["Tumbuhan, hewan, dan bakteri", "Air, tanah, dan cahaya matahari", "Jamur, lumut, dan rumput", "Manusia, ikan, dan cacing"], correct: 1 },
+      { id: 4, question: "Makhluk hidup yang mampu memproduksi makanannya sendiri melalui fotosintesis dinamakan...", options: ["Konsumen I", "Konsumen II", "Produsen", "Pengurai"], correct: 2 },
+      { id: 5, question: "Dalam ekosistem sawah, urutan rantai makanan yang tepat di bawah ini adalah...", options: ["Padi ➔ Belalang ➔ Katak ➔ Ular", "Katak ➔ Padi ➔ Belalang ➔ Ular", "Belalang ➔ Padi ➔ Ular ➔ Katak", "Ular ➔ Katak ➔ Belalang ➔ Padi"], correct: 0 },
+      { id: 6, question: "Organisme yang berfungsi menguraikan sisa-sisa makhluk hidup yang telah mati menjadi zat hara tanah adalah...", options: ["Produsen", "Pengurai (Dekomposer)", "Konsumen Puncak", "Herbivora"], correct: 1 },
+      { id: 7, question: "Contoh pengurai (dekomposer) di dalam ekosistem darat adalah...", options: ["Rumput dan ganggang", "Jamur dan bakteri", "Kelinci dan kambing", "Elang dan harimau"], correct: 1 },
+      { id: 8, question: "Hewan pemakan tumbuhan hijau secara langsung di dalam rantai makanan menduduki tingkat trofik sebagai...", options: ["Produsen", "Konsumen I (Herbivora)", "Konsumen II (Karnivora)", "Pengurai"], correct: 1 },
+      { id: 9, question: "Simbiosis mutualisme adalah hubungan antara dua makhluk hidup yang...", options: ["Satu untung dan satu rugi", "Saling menguntungkan kedua pihak", "Satu untung dan satu tidak dirugikan", "Saling merugikan kedua pihak"], correct: 1 },
+      { id: 10, question: "Contoh hubungan simbiosis mutualisme yang benar di alam adalah...", options: ["Nyamuk menggigit kulit manusia", "Kupu-kupu dengan bunga", "Tumbuhan benalu pada pohon inang", "Ikan remora dengan ikan hiu"], correct: 1 },
+      { id: 11, question: "Hubungan antara ikan remora dan ikan hiu merupakan contoh dari simbiosis...", options: ["Parasitisme", "Mutualisme", "Komensalisme", "Amensalisme"], correct: 2 },
+      { id: 12, question: "Simbiosis parasitisme terjadi jika salah satu pihak diuntungkan sedangkan pihak lain...", options: ["Diuntungkan juga", "Dirugikan", "Tidak terpengaruh", "Mati mendadak"], correct: 1 },
+      { id: 13, question: "Contoh hubungan simbiosis parasitisme di lingkungan sekitar kita adalah...", options: ["Lebah yang hinggap di bunga", "Benalu yang hidup menyerap nutrisi pohon inang", "Anggrek yang menempel pada batang pohon", "Burung jalak yang memakan kutu kerbau"], correct: 1 },
+      { id: 14, question: "Kumpulan dari individu sejenis yang hidup di suatu wilayah dan waktu tertentu dinamakan...", options: ["Individu", "Populasi", "Komunitas", "Ekosistem"], correct: 1 },
+      { id: 15, question: "Kumpulan dari berbagai populasi makhluk hidup yang saling berinteraksi di suatu wilayah disebut...", options: ["Biosfer", "Komunitas", "Habitat", "Ekosistem"], correct: 1 },
+      { id: 16, question: "Tempat tinggal alamiah bagi suatu makhluk hidup untuk tumbuh dan berkembang biak dinamakan...", options: ["Populasi", "Komunitas", "Habitat", "Adaptasi"], correct: 2 },
+      { id: 17, question: "Ekosistem yang sengaja diciptakan oleh manusia untuk memenuhi kebutuhan hidup adalah ekosistem...", options: ["Alami", "Buatan", "Laut", "Hutan hujan"], correct: 1 },
+      { id: 18, question: "Berikut ini merupakan contoh ekosistem buatan manusia, yaitu...", options: ["Hutan tropis dan laut", "Sawah, waduk, dan akuarium", "Danau alami dan sungai", "Gurun dan padang rumput"], correct: 1 },
+      { id: 19, question: "Gabungan dari beberapa rantai makanan yang saling berhubungan di dalam suatu ekosistem disebut...", options: ["Jaring-jaring makanan", "Piramida makanan", "Siklus energi", "Aliran trofik"], correct: 0 },
+      { id: 20, question: "Hewan yang memakan daging atau hewan lain dalam rantai makanan disebut...", options: ["Herbivora", "Karnivora", "Omnivora", "Insektivora"], correct: 1 },
+      { id: 21, question: "Hewan yang memakan baik tumbuhan maupun daging hewan lain dinamakan...", options: ["Herbivora", "Karnivora", "Omnivora", "Dekomposer"], correct: 2 },
+      { id: 22, question: "Dalam rantai makanan laut: Fitoplankton ➔ Zooplankton ➔ Ikan Kecil ➔ Ikan Besar. Fitoplankton bertindak sebagai...", options: ["Produsen", "Konsumen I", "Konsumen II", "Pengurai"], correct: 0 },
+      { id: 23, question: "Jika jumlah populasi katak di sawah menurun drastis karena diburu, dampak yang akan terjadi adalah...", options: ["Populasi belalang melonjak naik", "Populasi padi meningkat cepat", "Populasi ular bertambah banyak", "Elang kekurangan tempat tinggal"], correct: 0 },
+      { id: 24, question: "Peristiwa penebangan hutan secara liar dan pembakaran hutan dapat menyebabkan...", options: ["Hilangnya habitat hewan dan hilangnya resapan air", "Ekosistem menjadi makin seimbang", "Populasi tumbuhan makin melimpah", "Keanekaragaman hayati meningkat"], correct: 0 },
+      { id: 25, question: "Tindakan penanaman kembali hutan yang gundul dinamakan...", options: ["Irigasi", "Reboisasi", "Erosi", "Deforestasi"], correct: 1 },
+      { id: 26, question: "Gas yang diserap tumbuhan dari udara untuk proses fotosintesis adalah...", options: ["Oksigen (O2)", "Karbondioksida (CO2)", "Nitrogen (N2)", "Hidrogen (H2)"], correct: 1 },
+      { id: 27, question: "Gas yang dihasilkan oleh tumbuhan hijau dari proses fotosintesis yang sangat dibutuhkan manusia adalah...", options: ["Karbondioksida", "Oksigen", "Metana", "Amonia"], correct: 1 },
+      { id: 28, question: "Piramida makanan menggambarkan...", options: ["Jumlah energi dan biomassa pada tiap tingkat trofik", "Jenis hewan yang ada di kebun", "Siklus air di bumi", "Proses penguraian sampah"], correct: 0 },
+      { id: 29, question: "Posisi paling bawah (dasar) pada piramida makanan selalu ditempati oleh...", options: ["Konsumen I", "Konsumen Puncak", "Produsen", "Dekomposer"], correct: 2 },
+      { id: 30, question: "Salah satu contoh kegiatan manusia yang dapat merusak keseimbangan ekosistem laut adalah...", options: ["Penangkapan ikan menggunakan bahan peledak/pukat harimau", "Membuat kawasan konservasi terumbu karang", "Menanam pohon bakau di pesisir pantai", "Memberi makan ikan secara teratur"], correct: 0 },
+      { id: 31, question: "Tumbuhan hijau disebut sebagai organisme autotrof karena...", options: ["Memakan makhluk hidup lain", "Mampu membuat makanannya sendiri", "Hidup menumpang pada tumbuhan lain", "Menguraikan zat organik"], correct: 1 },
+      { id: 32, question: "Hewan dan manusia disebut sebagai organisme heterotrof karena...", options: ["Dapat berfotosintesis", "Tidak dapat membuat makanan sendiri", "Mampu menghasilkan Oksigen", "Mengubah zat anorganik jadi organik"], correct: 1 },
+      { id: 33, question: "Cahaya matahari dalam ekosistem sangat penting bagi tumbuhan hijau untuk...", options: ["Proses bernapas", "Proses fotosintesis", "Proses pembusukan", "Proses penyerapan air"], correct: 1 },
+      { id: 34, question: "Eceng gondok yang tumbuh terlalu lebat menutup permukaan danau dapat menyebabkan...", options: ["Kadar oksigen terlarut dalam air berkurang", "Ikan di danau makin banyak", "Air danau makin jernih", "Cahaya matahari masuk lebih dalam"], correct: 0 },
+      { id: 35, question: "Tumbuhan benalu yang hidup di pohon mangga menyerap zat makanan dari...", options: ["Tanah di bawah pohon", "Pohon mangga inangnya", "Udara bebas", "Air hujan langsung"], correct: 1 },
+      { id: 36, question: "Ikan remora yang berenang di dekat ikan hiu untuk mendapatkan sisa makanan merupakan simbiosis...", options: ["Mutualisme", "Parasitisme", "Komensalisme", "Predasi"], correct: 2 },
+      { id: 37, question: "Hubungan antara serigala yang berburu kelinci di padang rumput dinamakan hubungan...", options: ["Simbiosis", "Predasi (Pemangsa)", "Kompetisi", "Netralisme"], correct: 1 },
+      { id: 38, question: "Dua populasi sapi di padang rumput yang berebut sumber makanan yang sama mengalami interaksi...", options: ["Kompetisi", "Predasi", "Parasitisme", "Mutualisme"], correct: 0 },
+      { id: 39, question: "Manakah di bawah ini yang merupakan contoh ekosistem air tawar?", options: ["Laut dan terumbu karang", "Sungai, danau, dan kolam", "Samudra dan estuari", "Padang lamun dan pantai"], correct: 1 },
+      { id: 40, question: "Penggunaan pestisida yang berlebihan pada lahan pertanian dapat menyebabkan...", options: ["Tanah menjadi makin subur", "Pencemaran tanah dan terbunuhnya organisme berguna", "Hasil panen selalu aman", "Hama tanaman hilang selamanya"], correct: 1 },
+      { id: 41, question: "Suatu zat atau sampah yang dapat mencemari dan merusak lingkungan hidup dinamakan...", options: ["Polutan", "Polusi", "Erosi", "Infiltrasi"], correct: 0 },
+      { id: 42, question: "Upaya pencegahan banjir dan erosi tanah di daerah pegunungan dilakukan dengan membuat...", options: ["Sistem terasering (sengkedan)", "Bangunan tinggi", "Kolam lele", "Pabrik semen"], correct: 0 },
+      { id: 43, question: "Hewan yang menempati posisi konsumen puncak dalam rantai makanan adalah hewan yang...", options: ["Memproduksi makanan sendiri", "Tidak lagi dimakan oleh pemangsa lain saat hidup", "Selalu memakan rumput", "Berfungsi sebagai pengurai"], correct: 1 },
+      { id: 44, question: "Di bawah ini hewan yang tergolong ke dalam kelompok herbivora adalah...", options: ["Sapi, kambing, dan kelinci", "Harimau, elang, dan serigala", "Ayam, tikus, dan monyet", "Singa, buaya, dan ulat"], correct: 0 },
+      { id: 45, question: "Di bawah ini hewan yang tergolong ke dalam kelompok karnivora adalah...", options: ["Sapi dan kuda", "Harimau dan serigala", "Kelinci dan kambing", "Ayam dan bebek"], correct: 1 },
+      { id: 46, question: "Keseimbangan ekosistem akan tercapai apabila...", options: ["Jumlah produsen lebih banyak dari konsumen I", "Jumlah konsumen puncak lebih banyak dari produsen", "Jumlah pengurai berkurang drastis", "Tidak ada tumbuhan hijau"], correct: 0 },
+      { id: 47, question: "Pencemaran udara yang terjadi di kota-kota besar sebagian besar disebabkan oleh...", options: ["Asap kendaraan bermotor dan pabrik", "Proses fotosintesis pohon", "Penggunaan pupuk organik", "Sisa pembusukan sampah alami"], correct: 0 },
+      { id: 48, question: "Taman Nasional dibuat oleh pemerintah dengan tujuan untuk...", options: ["Melindungi ekosistem dan keanekaragaman hayati", "Dijadikan area perburuan bebas", "Membuka lahan sawit baru", "Membangun pabrik industri"], correct: 0 },
+      { id: 49, question: "Proses masuknya bahan berbahaya atau polutan ke dalam lingkungan air disebut...", options: ["Pencemaran air", "Pencemaran tanah", "Pencemaran udara", "Reboisasi"], correct: 0 },
+      { id: 50, question: "Sebagai seorang siswa, langkah sederhana yang bisa kita lakukan untuk menjaga kestabilan lingkungan adalah...", options: ["Membuang sampah pada tempatnya dan hemat air", "Membakar sampah plastik di halaman", "Memetik bunga di taman secara sembarangan", "Membuang limbah ke sungai"], correct: 0 }
+    ];
 
-      if (i % 4 === 1) {
-        qText = `Manakah di bawah ini yang merupakan contoh kelompok komponen Biotik di dalam sebuah ekosistem kolam?`;
-        opts = ["Air, batu, dan lumpur", "Cahaya matahari dan suhu udara", "Ikan, lumut, dan katak", "Oksigen dan mineral tanah"];
-        correctIdx = 2;
-      } else if (i % 4 === 2) {
-        qText = `Komponen Abiotik sangat penting bagi kelangsungan hidup organisme. Berikut yang termasuk komponen abiotik adalah...`;
-        opts = ["Tumbuhan padi dan rumput", "Cahaya matahari, air, dan tanah", "Bakteri pengurai tanah", "Cacing tanah dan belalang"];
-        correctIdx = 1;
-      } else if (i % 4 === 3) {
-        qText = `Dalam rantai makanan ekosistem kebun: Rumput ➔ Ulat ➔ Burung ➔ Elang. Peran burung bertindak sebagai...`;
-        opts = ["Produsen utama", "Konsumen tingkat I", "Konsumen tingkat II", "Pengurai akhir"];
-        correctIdx = 2;
-      } else {
-        qText = `Hubungan timbal balik antara bunga dengan lebah disebut simbiosis mutualisme karena...`;
-        opts = ["Kedua belah pihak saling diuntungkan", "Lebah untung, bunga dirugikan", "Bunga untung, lebah mati", "Keduanya saling merugikan"];
-        correctIdx = 0;
-      }
-
-      QUESTIONS_BANK.push({
-        id: i,
-        question: qText,
-        options: opts,
-        correct: correctIdx,
-        claimedBy: null
-      });
-    }
+    let QUESTIONS_BANK = DEFAULT_50_EKOSISTEM_SOAL.map(q => ({ ...q, claimedBy: null }));
 
     window.addEventListener('DOMContentLoaded', () => {
       renderMateri();
       renderLeaderboardBar();
       renderQuestionsGrid();
       renderTeacherSummaryTable();
+      renderTeamQuickSelectors();
       updateHeaderDisplay();
     });
 
+    // --- FITUR PAUSE & PAUSE INTERAKTIF ---
     function togglePauseGame() {
       sound.playClick();
       isGamePaused = !isGamePaused;
@@ -833,12 +950,38 @@
         if (globalText) globalText.innerText = "Resume";
         if (modalIcon) modalIcon.className = "fa-solid fa-play mr-1";
         if (modalText) modalText.innerText = "Resume";
+
+        // Tampilkan pop-up pemberitahuan bahwa kuis dihentikan oleh guru
+        document.getElementById('modal-pause-notice').classList.remove('hidden');
       } else {
         if (globalIcon) globalIcon.className = "fa-solid fa-pause mr-1.5";
         if (globalText) globalText.innerText = "Pause";
         if (modalIcon) modalIcon.className = "fa-solid fa-pause mr-1";
         if (modalText) modalText.innerText = "Pause";
+
+        document.getElementById('modal-pause-notice').classList.add('hidden');
       }
+
+      // Update state buzzer buttons saat di-pause
+      updateBuzzerState();
+    }
+
+    function closePauseNoticeModal() {
+      sound.playClick();
+      document.getElementById('modal-pause-notice').classList.add('hidden');
+    }
+
+    function updateBuzzerState() {
+      const buzzerBtns = document.querySelectorAll('.buzzer-btn');
+      buzzerBtns.forEach(btn => {
+        if (isGamePaused) {
+          btn.classList.add('opacity-50', 'cursor-not-allowed');
+          btn.disabled = true;
+        } else {
+          btn.classList.remove('opacity-50', 'cursor-not-allowed');
+          btn.disabled = false;
+        }
+      });
     }
 
     function switchTab(tabName) {
@@ -871,54 +1014,43 @@
       appConfig.mapel = document.getElementById('input-mapel').value;
       updateHeaderDisplay();
       sound.playClick();
-      alert("Informasi kelas dan mata pelajaran berhasil diperbarui!");
+      showUploadSuccessModal("Informasi Diperbarui!", `Informasi kelas dan mata pelajaran berhasil disesuaikan menjadi ${appConfig.kelas} - ${appConfig.mapel}.`);
     }
 
-    // --- GENERATOR ANIMASI ADAPTIF SVG ---
-    function getAdaptiveAnimationSVG(data) {
-      const lowerText = (JSON.stringify(data) + " " + (data.sectionId || "") + " " + (data.visualId || "")).toLowerCase();
+    // --- FITUR BACA VISUAL MATERI PINTAR (DYNAMIC SMART VISUAL ENGINE) ---
+    function generateSmartVisualSVG(data) {
+      const fullText = (
+        (data.title || "") + " " +
+        (data.sectionId || "") + " " +
+        (data.visualId || "") + " " +
+        (data.infoBox ? (data.infoBox.header + " " + data.infoBox.text) : "") + " " +
+        (data.points ? data.points.map(p => (p.title || "") + " " + (p.desc || "") + " " + (p.example || "")).join(" ") : "")
+      ).toLowerCase();
 
-      // 1. SIKLUS AIR
-      if (data.visualId === "vis-eko-siklus-air" || lowerText.includes("siklus air") || lowerText.includes("daur air") || lowerText.includes("evaporasi")) {
-        return `
-          <svg class="w-full max-w-sm h-64" viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="270" cy="45" r="24" fill="#F59E0B" class="animate-pulse-glow" />
-            <path d="M0 180 Q160 160 320 180 V240 H0 Z" fill="#2563EB"/>
-            <text x="10" y="215" fill="#E0F2FE" font-size="10" font-weight="extrabold">1. Laut/Danau (Air)</text>
-            <g class="animate-float">
-              <path d="M70 65 Q90 45 120 65 Q140 45 160 65 H70 Z" fill="#93C5FD" opacity="0.9"/>
-              <text x="80" y="55" fill="#1E293B" font-size="9" font-weight="bold">2. Awan (Kondensasi)</text>
-            </g>
-            <path d="M220 165 Q230 120 220 85" stroke="#FBBF24" stroke-width="3" stroke-linecap="round" class="animate-flow"/>
-            <text x="215" y="130" fill="#FBBF24" font-size="9" font-weight="bold">Evaporasi ➔</text>
-            <line x1="90" y1="80" x2="85" y2="120" stroke="#38BDF8" stroke-width="2" stroke-dasharray="4 4" class="animate-pulse"/>
-            <line x1="110" y1="80" x2="105" y2="120" stroke="#38BDF8" stroke-width="2" stroke-dasharray="4 4" class="animate-pulse"/>
-            <line x1="130" y1="80" x2="125" y2="120" stroke="#38BDF8" stroke-width="2" stroke-dasharray="4 4" class="animate-pulse"/>
-            <text x="25" y="105" fill="#38BDF8" font-size="9" font-weight="bold">3. Presipitasi (Hujan)</text>
-            <path d="M40 180 Q50 200 60 220" stroke="#10B981" stroke-width="2" stroke-dasharray="3 3"/>
-            <text x="65" y="232" fill="#10B981" font-size="8" font-weight="bold">4. Infiltrasi (Tanah)</text>
-          </svg>
-        `;
-      }
-
-      // 2. RANTAI MAKANAN
-      if (data.visualId === "vis-eko-rantai-makanan" || lowerText.includes("rantai makanan") || lowerText.includes("produsen")) {
+      if (fullText.includes("rantai makanan") || fullText.includes("makan dan dimakan") || fullText.includes("trofik") || fullText.includes("dekomposer")) {
         return `
           <svg class="w-full max-w-sm h-64" viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="45" cy="40" r="18" fill="#F59E0B" class="animate-pulse-glow"/>
             <text x="15" y="70" fill="#FCD34D" font-size="9" font-weight="extrabold">1. Energi Surya</text>
+            
             <rect x="20" y="140" width="55" height="50" rx="8" fill="#065F46" stroke="#34D399" stroke-width="2"/>
-            <text x="28" y="165" fill="#A7F3D0" font-size="10" font-weight="black">Padi</text>
-            <text x="24" y="180" fill="#6EE7B7" font-size="8">(Produsen)</text>
+            <text x="28" y="165" fill="#A7F3D0" font-size="10" font-weight="black">Produsen</text>
+            <text x="24" y="180" fill="#6EE7B7" font-size="8">(Tumbuhan)</text>
+            
             <path d="M80 165 H105" stroke="#F59E0B" stroke-width="3" stroke-linecap="round" class="animate-flow"/>
+            
             <rect x="110" y="140" width="60" height="50" rx="8" fill="#92400E" stroke="#FBBF24" stroke-width="2"/>
-            <text x="116" y="165" fill="#FDE68A" font-size="10" font-weight="black">Belalang</text>
-            <text x="115" y="180" fill="#FCD34D" font-size="8">(Konsumen I)</text>
+            <text x="116" y="165" fill="#FDE68A" font-size="10" font-weight="black">Konsumen I</text>
+            <text x="115" y="180" fill="#FCD34D" font-size="8">(Herbivora)</text>
+            
             <path d="M175 165 H200" stroke="#F59E0B" stroke-width="3" stroke-linecap="round" class="animate-flow"/>
+            
             <rect x="205" y="140" width="55" height="50" rx="8" fill="#1E3A8A" stroke="#60A5FA" stroke-width="2"/>
-            <text x="216" y="165" fill="#BFDBFE" font-size="10" font-weight="black">Katak</text>
-            <text x="210" y="180" fill="#93C5FD" font-size="8">(Konsumen II)</text>
+            <text x="212" y="165" fill="#BFDBFE" font-size="10" font-weight="black">Konsumen II</text>
+            <text x="210" y="180" fill="#93C5FD" font-size="8">(Karnivora)</text>
+            
             <path d="M232 135 Q232 80 160 80 Q90 80 90 120" stroke="#A855F7" stroke-width="2" stroke-dasharray="4 4"/>
+            
             <rect x="125" y="55" width="70" height="40" rx="8" fill="#581C87" stroke="#C084FC" stroke-width="2"/>
             <text x="135" y="75" fill="#E9D5FF" font-size="9" font-weight="black">Pengurai</text>
             <text x="132" y="88" fill="#D8B4FE" font-size="7">(Jamur/Bakteri)</text>
@@ -926,27 +1058,58 @@
         `;
       }
 
-      // 3. FOTOSINTESIS
-      if (data.visualId === "vis-eko-proses-fotosintesis" || lowerText.includes("fotosintesis") || lowerText.includes("klorofil")) {
+      if (fullText.includes("fotosintesis") || fullText.includes("klorofil") || fullText.includes("karbondioksida")) {
         return `
           <svg class="w-full max-w-sm h-64" viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="45" r="22" fill="#F59E0B" class="animate-pulse-glow" />
-            <path d="M75 55 L120 85" stroke="#FBBF24" stroke-width="3" stroke-linecap="round" class="animate-flow"/>
-            <text x="80" y="65" fill="#FCD34D" font-size="9" font-weight="bold">Sinar Matahari</text>
-            <path d="M160 210 V110" stroke="#78350F" stroke-width="8" stroke-linecap="round"/>
-            <path d="M160 130 Q220 110 210 150 Q160 170 160 130 Z" fill="#10B981" class="animate-float"/>
-            <path d="M160 150 Q100 130 110 170 Q160 190 160 150 Z" fill="#059669" class="animate-float"/>
-            <path d="M40 140 H100" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" class="animate-flow"/>
-            <text x="35" y="132" fill="#38BDF8" font-size="10" font-weight="black">Karbondioksida (CO2)</text>
-            <path d="M210 135 H275" stroke="#34D399" stroke-width="3" stroke-linecap="round" class="animate-flow"/>
-            <text x="215" y="125" fill="#34D399" font-size="10" font-weight="black">Oksigen (O2)</text>
-            <path d="M160 240 V200" stroke="#60A5FA" stroke-width="4" stroke-dasharray="4 4" class="animate-pulse"/>
-            <text x="170" y="230" fill="#93C5FD" font-size="9" font-weight="bold">Air (H2O) Akar</text>
+            <circle cx="50" cy="50" r="22" fill="#F59E0B" class="animate-pulse-glow"/>
+            <text x="25" y="85" fill="#FDE68A" font-size="9" font-weight="bold">Cahaya Matahari</text>
+
+            <path d="M160 180 C110 130 110 70 160 50 C210 70 210 130 160 180 Z" fill="#10B981" stroke="#047857" stroke-width="3"/>
+            <line x1="160" y1="180" x2="160" y2="50" stroke="#047857" stroke-width="2"/>
+
+            <path d="M70 100 L115 110" stroke="#38BDF8" stroke-width="3" class="animate-flow"/>
+            <text x="45" y="112" fill="#38BDF8" font-size="9" font-weight="bold">Air + CO2</text>
+
+            <path d="M205 110 L250 100" stroke="#4ADE80" stroke-width="3" class="animate-flow"/>
+            <text x="215" y="95" fill="#4ADE80" font-size="9" font-weight="bold">Oksigen (O2)</text>
+            <text x="215" y="125" fill="#FACC15" font-size="9" font-weight="bold">Glukosa</text>
           </svg>
         `;
       }
 
-      // 4. DEFAULT
+      if (fullText.includes("simbiosis") || fullText.includes("mutualisme") || fullText.includes("parasitisme") || fullText.includes("komensalisme")) {
+        return `
+          <svg class="w-full max-w-sm h-64" viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="25" width="280" height="52" rx="10" fill="#064E3B" stroke="#10B981" stroke-width="2"/>
+            <text x="35" y="48" fill="#A7F3D0" font-size="11" font-weight="black">Mutualisme (+ / +)</text>
+            <text x="35" y="65" fill="#D1FAE5" font-size="9">Saling Menguntungkan Kedua Pihak</text>
+            
+            <rect x="20" y="92" width="280" height="52" rx="10" fill="#1E3A8A" stroke="#3B82F6" stroke-width="2"/>
+            <text x="35" y="115" fill="#BFDBFE" font-size="11" font-weight="black">Komensalisme (+ / 0)</text>
+            <text x="35" y="132" fill="#E0F2FE" font-size="9">Satu Untung, Satu Tidak Dirugikan</text>
+            
+            <rect x="20" y="160" width="280" height="52" rx="10" fill="#881337" stroke="#F43F5E" stroke-width="2"/>
+            <text x="35" y="183" fill="#FECDD3" font-size="11" font-weight="black">Parasitisme (+ / -)</text>
+            <text x="35" y="200" fill="#FFE4E6" font-size="9">Satu Untung, Pihak Lain Dirugikan</text>
+          </svg>
+        `;
+      }
+
+      if (fullText.includes("piramida") || fullText.includes("keseimbangan") || fullText.includes("pelestarian") || fullText.includes("konservasi")) {
+        return `
+          <svg class="w-full max-w-sm h-64" viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M160 20 L280 200 H40 Z" fill="#065F46" stroke="#34D399" stroke-width="3"/>
+            <line x1="80" y1="140" x2="240" y2="140" stroke="#34D399" stroke-width="2"/>
+            <line x1="120" y1="80" x2="200" y2="80" stroke="#34D399" stroke-width="2"/>
+            <text x="122" y="60" fill="#FDE68A" font-size="10" font-weight="black">Konsumen Puncak</text>
+            <text x="110" y="115" fill="#A7F3D0" font-size="10" font-weight="black">Konsumen Sekunder</text>
+            <text x="115" y="175" fill="#FFFFFF" font-size="11" font-weight="black">PRODUSEN (Dasar Utama)</text>
+            <circle cx="160" cy="215" r="10" fill="#10B981" class="animate-pulse"/>
+            <text x="80" y="232" fill="#34D399" font-size="9" font-weight="bold">Keseimbangan Piramida Ekosistem</text>
+          </svg>
+        `;
+      }
+
       return `
         <svg class="w-full max-w-sm h-64" viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="260" cy="45" r="24" fill="#F59E0B" class="animate-pulse-glow" />
@@ -978,7 +1141,7 @@
       document.getElementById('subbab-badge').innerText = `Sub-Bab ${currentSubBab + 1} Dari ${MATERI_MODULES.length}`;
       document.getElementById('subbab-title').innerText = data.title;
 
-      const svgAnimationHtml = getAdaptiveAnimationSVG(data);
+      const svgAnimationHtml = generateSmartVisualSVG(data);
 
       let pointsHtml = '';
       if (data.points && data.points.length > 0) {
@@ -1019,7 +1182,7 @@
               ID: ${data.sectionId || 'sec-default'} | ${data.visualId || 'vis-default'}
             </div>
             ${svgAnimationHtml}
-            <span class="text-xs font-bold text-slate-300 mt-3 font-display uppercase tracking-wider">${data.visualLabel || 'Visualisasi Proses Ekosistem'}</span>
+            <span class="text-xs font-bold text-slate-300 mt-3 font-display uppercase tracking-wider">${data.visualLabel || 'Visualisasi Proses Materi'}</span>
           </div>
         </div>
 
@@ -1042,7 +1205,19 @@
       }
     }
 
-    // --- FITUR UNGGAH MATERI BARU (GANTI UTUH MATERI SEBELUMNYA) ---
+    // --- POP-UP MODAL UNGGAH SUKSES INTERAKTIF ---
+    function showUploadSuccessModal(title, message) {
+      document.getElementById('upload-success-title').innerText = title;
+      document.getElementById('upload-success-msg').innerText = message;
+      document.getElementById('modal-upload-success').classList.remove('hidden');
+    }
+
+    function closeUploadSuccessModal() {
+      sound.playClick();
+      document.getElementById('modal-upload-success').classList.add('hidden');
+    }
+
+    // --- FITUR UNGGAH MATERI BARU ---
     function handleUploadMateri() {
       const fileInput = document.getElementById('upload-materi-file');
       if (!fileInput.files || fileInput.files.length === 0) {
@@ -1058,7 +1233,6 @@
           if (file.name.endsWith('.json')) {
             const uploadedModules = JSON.parse(e.target.result);
             if (Array.isArray(uploadedModules) && uploadedModules.length > 0) {
-              // GANTI UTUH ARRAY MATERI LAMA DENGAN MATERI BARU
               MATERI_MODULES = uploadedModules.map((mod, idx) => ({
                 sectionId: mod.sectionId || `sec-custom-${idx + 1}`,
                 visualId: mod.visualId || `vis-custom-${idx + 1}`,
@@ -1069,11 +1243,11 @@
                 visualLabel: mod.visualLabel || "Visualisasi Proses"
               }));
 
-              currentSubBab = 0; // RESET INDEX SUBBAB KE PERTAMA
+              currentSubBab = 0;
               renderMateri();
               sound.playCorrect();
-              alert(`Berhasil! Materi lama telah diganti sepenuhnya dengan ${MATERI_MODULES.length} sub-bab baru.`);
               closeTeacherModal();
+              showUploadSuccessModal("Materi Berhasil Diunggah!", `Materi lama telah diganti sepenuhnya dengan ${MATERI_MODULES.length} sub-bab baru.`);
               fileInput.value = '';
             } else {
               alert("Format JSON materi tidak sesuai. Harus berupa array daftar sub-bab.");
@@ -1082,7 +1256,6 @@
             const textContent = e.target.result;
             const paragraphs = textContent.split(/\r?\n\r?\n/).filter(p => p.trim().length > 0);
             if (paragraphs.length > 0) {
-              // GANTI UTUH MATERI DARI FILE TXT/MD
               MATERI_MODULES = paragraphs.map((para, idx) => ({
                 sectionId: `sec-txt-${idx + 1}`,
                 visualId: `vis-txt-${idx + 1}`,
@@ -1104,11 +1277,11 @@
                 visualLabel: `Visualisasi Proses Sub-Bab ${idx + 1}`
               }));
 
-              currentSubBab = 0; // RESET INDEX
+              currentSubBab = 0;
               renderMateri();
               sound.playCorrect();
-              alert(`Berhasil! File teks diproses dan menggantikan materi sebelumnya menjadi ${MATERI_MODULES.length} sub-bab.`);
               closeTeacherModal();
+              showUploadSuccessModal("File Teks Diproses!", `Materi baru berhasil dimuat dan diganti menjadi ${MATERI_MODULES.length} sub-bab.`);
               fileInput.value = '';
             }
           }
@@ -1165,25 +1338,14 @@
       const template = [
         {
           nomor: 1,
-          soal: "Kemampuan untuk melakukan usaha atau kerja disebut...",
+          soal: "Hubungan timbal balik antara makhluk hidup dengan lingkungannya disebut...",
           pilihan: {
-            A: "Gaya",
-            B: "Energi",
-            C: "Daya",
-            D: "Usaha"
+            A: "Populasi",
+            B: "Komunitas",
+            C: "Ekosistem",
+            D: "Biosfer"
           },
-          jawaban: "B. Energi"
-        },
-        {
-          nomor: 2,
-          soal: "Sumber energi terbesar bagi bumi adalah...",
-          pilihan: {
-            A: "Matahari",
-            B: "Angin",
-            C: "Air",
-            D: "Listrik"
-          },
-          jawaban: "A. Matahari"
+          jawaban: "C. Ekosistem"
         }
       ];
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(template, null, 2));
@@ -1196,7 +1358,7 @@
       sound.playClick();
     }
 
-    // --- FITUR UNGGAH SOAL BARU (GANTI UTUH BANK SOAL SEBELUMNYA) ---
+    // --- FITUR UNGGAH SOAL BARU ---
     function handleUploadSoal() {
       const fileInput = document.getElementById('upload-soal-file');
       if (!fileInput.files || fileInput.files.length === 0) {
@@ -1216,7 +1378,6 @@
           }
 
           if (Array.isArray(rawData) && rawData.length > 0) {
-            // GANTI UTUH BANK SOAL LAMA DENGAN SOAL BARU
             QUESTIONS_BANK = rawData.map((item, idx) => {
               const qText = item.soal || item.question || item.pertanyaan || `Soal Kuis #${idx + 1}`;
               
@@ -1258,7 +1419,6 @@
               };
             });
 
-            // RESET HITUNGAN KLAIM SELURUH KELOMPOK
             Object.values(TEAMS).forEach(t => { t.claimedCount = 0; });
 
             renderQuestionsGrid();
@@ -1267,8 +1427,8 @@
             updateHeaderDisplay();
 
             sound.playCorrect();
-            alert(`Berhasil! ${QUESTIONS_BANK.length} soal baru telah diunggah dan menggantikan bank soal lama secara keseluruhan.`);
             closeTeacherModal();
+            showUploadSuccessModal("Bank Soal Berhasil Diunggah!", `${QUESTIONS_BANK.length} soal baru telah menggantikan bank soal lama secara utuh.`);
 
             fileInput.value = '';
           } else {
@@ -1298,258 +1458,307 @@
       });
     }
 
+    function renderTeamQuickSelectors() {
+      const container = document.getElementById('team-quick-selectors');
+      if (!container) return;
+      container.innerHTML = '';
+      Object.values(TEAMS).forEach(t => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.onclick = () => selectActiveTeam(t.id);
+        btn.className = `px-2.5 py-1 rounded-lg text-xs font-bold text-white transition active:scale-95 flex items-center gap-1`;
+        btn.style.backgroundColor = t.color;
+        btn.innerHTML = `<i class="fa-solid fa-users text-[10px]"></i> ${t.name.replace('Kelompok ', '')}`;
+        container.appendChild(btn);
+      });
+    }
+
+    function selectActiveTeam(teamKey) {
+      if (isGamePaused) {
+        document.getElementById('modal-pause-notice').classList.remove('hidden');
+        return;
+      }
+      activeTeam = TEAMS[teamKey];
+      sound.playClick();
+      updateActiveTeamIndicator();
+    }
+
+    function updateActiveTeamIndicator() {
+      const ind = document.getElementById('active-team-indicator');
+      const banner = document.getElementById('buzzer-status-banner');
+      const bannerText = document.getElementById('buzzer-status-text');
+
+      if (activeTeam) {
+        ind.innerText = activeTeam.name;
+        ind.style.backgroundColor = activeTeam.color;
+        ind.style.color = '#FFFFFF';
+        ind.className = 'px-3 py-1 rounded-lg text-xs font-black border border-white/20 glow-gold';
+
+        if (banner && bannerText) {
+          banner.classList.remove('hidden');
+          banner.style.borderColor = activeTeam.color;
+          bannerText.innerText = `⚡ ${activeTeam.name.toUpperCase()} BERHAK MENJAWAB SOAL INI! ⚡`;
+          bannerText.style.color = activeTeam.color;
+        }
+      } else {
+        ind.innerText = 'Belum Dipilih (Gunakan Buzzer)';
+        ind.style.backgroundColor = '#1E293B';
+        ind.style.color = '#E2E8F0';
+        ind.className = 'px-3 py-1 rounded-lg text-xs font-black border border-slate-700';
+
+        if (banner) {
+          banner.classList.add('hidden');
+        }
+      }
+    }
+
+    function triggerBuzzer(teamKey) {
+      if (isGamePaused) {
+        document.getElementById('modal-pause-notice').classList.remove('hidden');
+        return;
+      }
+      sound.playBuzzer();
+      selectActiveTeam(teamKey);
+    }
+
     function renderQuestionsGrid() {
       const grid = document.getElementById('questions-grid');
       grid.innerHTML = '';
-      
+
       QUESTIONS_BANK.forEach((q, idx) => {
         const btn = document.createElement('button');
-        let bgStyle = "bg-slate-900/90 hover:bg-slate-800 text-slate-300 border-slate-800";
-        if (q.claimedBy && TEAMS[q.claimedBy]) {
-          bgStyle = `text-white font-black shadow-lg`;
-          btn.style.backgroundColor = TEAMS[q.claimedBy].color;
-          btn.style.borderColor = TEAMS[q.claimedBy].color;
-        }
-        btn.className = `h-12 rounded-xl border font-black text-xs sm:text-sm font-display flex flex-col items-center justify-center transition active:scale-95 ${bgStyle}`;
-        btn.innerHTML = `
-          <span>#${q.id}</span>
-          ${q.claimedBy ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}
-        `;
+        const isClaimed = q.claimedBy !== null;
+        const teamObj = isClaimed ? TEAMS[q.claimedBy] : null;
+
+        btn.type = 'button';
         btn.onclick = () => openQuestionModal(idx);
+
+        if (isClaimed && teamObj) {
+          btn.className = "h-14 sm:h-16 rounded-2xl flex flex-col items-center justify-center font-black text-xs sm:text-sm text-white shadow-lg transition transform hover:-translate-y-1 relative overflow-hidden border border-white/20";
+          btn.style.backgroundColor = teamObj.color;
+          btn.innerHTML = `
+            <span class="text-[10px] opacity-80 uppercase tracking-tighter">SOAL</span>
+            <span class="font-display text-sm font-black">#${q.id}</span>
+            <span class="absolute bottom-1 right-1 text-[9px] bg-slate-950/60 px-1 rounded font-bold">${teamObj.name.split(' ')[1]}</span>
+          `;
+        } else {
+          btn.className = "h-14 sm:h-16 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 hover:border-amber-400/50 flex flex-col items-center justify-center font-bold text-xs sm:text-sm text-slate-300 hover:text-amber-300 shadow transition transform hover:-translate-y-1";
+          btn.innerHTML = `
+            <span class="text-[9px] text-slate-500 uppercase">SOAL</span>
+            <span class="font-display font-black text-white text-base">#${q.id}</span>
+          `;
+        }
+
         grid.appendChild(btn);
       });
     }
 
     function openQuestionModal(qIndex) {
-      if (qIndex < 0 || qIndex >= QUESTIONS_BANK.length) return;
+      if (isGamePaused) {
+        document.getElementById('modal-pause-notice').classList.remove('hidden');
+        return;
+      }
+
       sound.playClick();
       currentActiveQuestionIndex = qIndex;
       const q = QUESTIONS_BANK[qIndex];
 
       document.getElementById('modal-q-number').innerText = `SOAL REBUTAN #${q.id}`;
       document.getElementById('modal-q-text').innerText = q.question;
-      
-      const indicator = document.getElementById('active-team-indicator');
-      const buzzerSection = document.getElementById('buzzer-section');
 
-      if (q.claimedBy && TEAMS[q.claimedBy]) {
-        const team = TEAMS[q.claimedBy];
-        activeTeam = team.id;
-        indicator.innerText = `${team.name} (Sudah Diklaim - Bisa Diubah)`;
-        indicator.style.backgroundColor = team.color;
-        indicator.className = "px-3 py-1 rounded-lg text-xs font-black text-white shadow-md";
-        
-        buzzerSection.classList.remove('hidden');
-        document.getElementById('buzzer-status-banner').classList.remove('hidden');
-        document.getElementById('buzzer-status-text').innerHTML = `<span style="color: ${team.color};">Soal ini saat ini diklaim oleh ${team.name}. Anda tetap bisa memilih kelompok lain di bawah ini.</span>`;
+      if (q.claimedBy) {
+        activeTeam = TEAMS[q.claimedBy];
       } else {
         activeTeam = null;
-        indicator.innerText = "Belum Dipilih (Gunakan Buzzer)";
-        indicator.className = "px-3 py-1 rounded-lg text-xs font-black bg-slate-800 text-slate-200 border border-slate-700";
-        indicator.style.backgroundColor = '';
-        
-        buzzerSection.classList.remove('hidden');
-        document.getElementById('buzzer-status-banner').classList.add('hidden');
       }
+      updateActiveTeamIndicator();
+      updateBuzzerState();
 
-      renderQuickTeamSelectors();
-      renderOptions(q, activeTeam, false);
+      // Render Pilihan Jawaban
+      const optContainer = document.getElementById('options-container');
+      optContainer.innerHTML = '';
+
+      q.options.forEach((opt, optIdx) => {
+        const optBtn = document.createElement('button');
+        optBtn.type = 'button';
+        optBtn.onclick = () => submitAnswer(optIdx);
+        optBtn.className = "p-4 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 hover:border-amber-400 text-left transition flex items-center space-x-3 group active:scale-95";
+        
+        const label = String.fromCharCode(65 + optIdx);
+        optBtn.innerHTML = `
+          <span class="w-8 h-8 rounded-xl bg-slate-800 group-hover:bg-amber-500 group-hover:text-slate-950 text-amber-400 font-black font-display text-xs flex items-center justify-center transition border border-slate-700">${label}</span>
+          <span class="text-xs sm:text-sm font-semibold text-slate-200 group-hover:text-white flex-1">${opt}</span>
+        `;
+        optContainer.appendChild(optBtn);
+      });
+
+      startQuestionTimer();
       document.getElementById('modal-question').classList.remove('hidden');
-      
-      startTimer();
+    }
+
+    function startQuestionTimer() {
+      clearInterval(timerInterval);
+      timerSecondsLeft = 30;
+      document.getElementById('timer-count').innerText = timerSecondsLeft;
+
+      timerInterval = setInterval(() => {
+        if (isGamePaused) return;
+
+        timerSecondsLeft--;
+        document.getElementById('timer-count').innerText = timerSecondsLeft;
+
+        if (timerSecondsLeft <= 0) {
+          clearInterval(timerInterval);
+          sound.playWrong();
+          showFeedbackModal(false, null, "WAKTU HABIS!", "Batas waktu 30 detik untuk menjawab telah berakhir.");
+        }
+      }, 1000);
+    }
+
+    function stopQuestionTimer() {
+      clearInterval(timerInterval);
     }
 
     function closeQuestionModal() {
-      clearInterval(timerInterval);
+      stopQuestionTimer();
+      sound.playClick();
       document.getElementById('modal-question').classList.add('hidden');
+    }
+
+    function submitAnswer(chosenOptionIndex) {
+      if (isGamePaused) {
+        document.getElementById('modal-pause-notice').classList.remove('hidden');
+        return;
+      }
+
+      if (!activeTeam) {
+        alert("Tekan Buzzer Kelompok terlebih dahulu sebelum memilih jawaban!");
+        sound.playWrong();
+        return;
+      }
+
+      stopQuestionTimer();
+      const q = QUESTIONS_BANK[currentActiveQuestionIndex];
+      const isCorrect = (chosenOptionIndex === q.correct);
+
+      // FIX KLAIM SOAL JAWABAN:
+      // Baik jawaban benar maupun salah, kelompok yang menjawab AKAN TETAP MENGKLAIM SOAL INI!
+      if (q.claimedBy !== activeTeam.id) {
+        if (q.claimedBy && TEAMS[q.claimedBy]) {
+          TEAMS[q.claimedBy].claimedCount = Math.max(0, TEAMS[q.claimedBy].claimedCount - 1);
+        }
+        q.claimedBy = activeTeam.id;
+        activeTeam.claimedCount++;
+      }
+
+      if (isCorrect) {
+        sound.playCorrect();
+        
+        // Poin Tambah
+        activeTeam.score += 100;
+
+        showFeedbackModal(true, activeTeam, "JAWABAN BENAR! 🎉", `Kelompok ${activeTeam.name} berhasil menjawab dengan benar (+100 poin) & soal ini resmi terklaim!`);
+      } else {
+        sound.playWrong();
+        activeTeam.score = Math.max(0, activeTeam.score - 20);
+
+        showFeedbackModal(false, activeTeam, "JAWABAN KURANG TEPAT! ❌", `Kelompok ${activeTeam.name} mendapatkan penalti -20 poin. Jawaban yang benar adalah (${String.fromCharCode(65 + q.correct)}). Soal ini tetap terklaim oleh ${activeTeam.name}.`);
+      }
+
       renderQuestionsGrid();
       renderLeaderboardBar();
       renderTeacherSummaryTable();
     }
 
-    function startTimer() {
-      clearInterval(timerInterval);
-      timerSecondsLeft = 30;
-      questionStartTime = Date.now();
-      document.getElementById('timer-count').innerText = timerSecondsLeft;
-
-      timerInterval = setInterval(() => {
-        if (isGamePaused) return;
-        timerSecondsLeft--;
-        document.getElementById('timer-count').innerText = timerSecondsLeft;
-        if (timerSecondsLeft <= 0) {
-          clearInterval(timerInterval);
-          sound.playWrong();
-          alert("Waktu 30 detik habis! Soal ditutup.");
-          closeQuestionModal();
-        }
-      }, 1000);
-    }
-
-    function triggerBuzzer(teamId) {
-      sound.playBuzzer();
-      
-      const q = QUESTIONS_BANK[currentActiveQuestionIndex];
-      if (q && q.claimedBy && q.claimedBy !== teamId && TEAMS[q.claimedBy]) {
-        TEAMS[q.claimedBy].claimedCount = Math.max(0, TEAMS[q.claimedBy].claimedCount - 1);
-      }
-
-      activeTeam = teamId;
-      const team = TEAMS[teamId];
-
-      const indicator = document.getElementById('active-team-indicator');
-      indicator.innerText = team.name + " (Siap Menjawab)";
-      indicator.style.backgroundColor = team.color;
-      indicator.className = "px-3 py-1 rounded-lg text-xs font-black text-white shadow-md";
-
-      const banner = document.getElementById('buzzer-status-banner');
-      banner.classList.remove('hidden');
-      document.getElementById('buzzer-status-text').innerHTML = `<span style="color: ${team.color};">${team.name} BERHASIL MENDAHULUI BUZZER! Silakan pilih jawaban.</span>`;
-
-      renderQuickTeamSelectors();
-      renderOptions(q, teamId, false);
-    }
-
-    function renderQuickTeamSelectors() {
-      const container = document.getElementById('team-quick-selectors');
-      container.innerHTML = '';
-
-      Object.values(TEAMS).forEach(team => {
-        const btn = document.createElement('button');
-        const isSelected = (activeTeam === team.id);
-        btn.className = `px-3 py-1.5 rounded-xl font-bold text-xs border transition flex items-center space-x-1.5 ${isSelected ? 'ring-2 ring-white scale-105' : 'opacity-80 hover:opacity-100'}`;
-        btn.style.backgroundColor = team.color;
-        btn.style.color = '#FFFFFF';
-        btn.innerHTML = `<span class="w-2 h-2 rounded-full bg-white"></span><span>${team.name}</span>`;
-        btn.onclick = () => triggerBuzzer(team.id);
-        container.appendChild(btn);
-      });
-    }
-
-    function renderOptions(q, answeringTeamId, isAlreadyClaimed) {
-      const container = document.getElementById('options-container');
-      container.innerHTML = '';
-      
-      q.options.forEach((optText, optIdx) => {
-        const btn = document.createElement('button');
-        const isEnabled = (answeringTeamId !== null);
-        const letter = String.fromCharCode(65 + optIdx);
-
-        btn.className = `p-4 rounded-xl border text-left text-xs sm:text-sm font-semibold transition flex items-center justify-between ${isEnabled ? 'bg-slate-900/90 hover:bg-slate-800 border-amber-500/40 hover:border-amber-400 text-white cursor-pointer shadow-md' : 'bg-slate-900/40 border-slate-800/60 text-slate-500 cursor-not-allowed'}`;
-        
-        let labelStatus = 'Buzzer Dulu';
-        if (isEnabled) {
-          labelStatus = 'Pilih';
-        }
-
-        btn.innerHTML = `
-          <div class="flex items-center space-x-3">
-            <span class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center justify-center font-black font-display text-sm flex-shrink-0">${letter}</span>
-            <span class="text-slate-200 font-bold">${letter}. ${optText}</span>
-          </div>
-          <span class="text-xs font-bold ${isEnabled ? 'text-amber-400' : 'text-slate-600'}">${labelStatus}</span>
-        `;
-
-        if (isEnabled) {
-          btn.onclick = () => submitAnswer(q.id, optIdx, answeringTeamId);
-        }
-        container.appendChild(btn);
-      });
-    }
-
-    function submitAnswer(qId, chosenIdx, teamId) {
-      clearInterval(timerInterval);
-      const q = QUESTIONS_BANK.find(item => item.id === qId);
-      const team = TEAMS[teamId];
-      const isCorrect = (chosenIdx === q.correct);
-
-      const chosenLetter = String.fromCharCode(65 + chosenIdx);
-      const chosenText = q.options[chosenIdx];
-
-      if (q.claimedBy !== teamId) {
-        if (q.claimedBy && TEAMS[q.claimedBy]) {
-          TEAMS[q.claimedBy].claimedCount = Math.max(0, TEAMS[q.claimedBy].claimedCount - 1);
-        }
-        q.claimedBy = teamId;
-        team.claimedCount += 1;
-      }
-
-      if (isCorrect) {
-        sound.playCorrect();
-        team.score += 100;
-        showFeedbackPopup(true, team, `${chosenLetter}. ${chosenText}`);
-      } else {
-        sound.playWrong();
-        team.score -= 20;
-        showFeedbackPopup(false, team, `${chosenLetter}. ${chosenText}`);
-      }
-
-      closeQuestionModal();
-    }
-
-    function showFeedbackPopup(isCorrect, team, chosenFull) {
+    function showFeedbackModal(isCorrect, teamObj, title, message) {
+      const modal = document.getElementById('modal-feedback');
       const emojiContainer = document.getElementById('feedback-emoji-container');
-      const title = document.getElementById('feedback-title');
-      const subtitle = document.getElementById('feedback-subtitle');
+      const titleEl = document.getElementById('feedback-title');
+      const subtitleEl = document.getElementById('feedback-subtitle');
       const detailBox = document.getElementById('feedback-detail-box');
-      const feedbackCard = document.getElementById('feedback-card');
+      const card = document.getElementById('feedback-card');
 
       if (isCorrect) {
-        emojiContainer.innerHTML = `<span class="animate-bounce">🎉</span><span class="text-7xl">✅</span><span class="animate-bounce">👏</span>`;
-        title.innerHTML = `<span class="text-emerald-400 font-black">JAWABAN BENAR!</span>`;
-        subtitle.innerHTML = `<span style="color: ${team.color};">${team.name} DAPAT +100 POIN!</span>`;
-        
-        detailBox.className = "p-4 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-left text-xs space-y-2 mb-6";
-        detailBox.innerHTML = `
-          <div class="text-slate-300"><span class="font-bold text-emerald-400">Pilihan Jawaban:</span> ${chosenFull}</div>
-          <div class="text-emerald-300 font-bold flex items-center mt-2"><i class="fa-solid fa-circle-check mr-1.5 text-sm"></i> Luar biasa! Jawaban Anda tepat sasaran. Soal berhasil diklaim (+100 Skor).</div>
-        `;
-
-        feedbackCard.className = "glass-card max-w-md w-full rounded-3xl p-8 text-center relative shadow-2xl border border-emerald-500/50 glow-green animate-pop";
+        emojiContainer.innerHTML = '🥳 🌟 🏆';
+        titleEl.innerText = title;
+        titleEl.className = "text-2xl sm:text-3xl font-black font-display mb-2 text-emerald-400";
+        subtitleEl.innerText = teamObj ? `${teamObj.name.toUpperCase()} MENDAPATKAN POIN & SOAL!` : 'BERHASIL!';
+        card.className = "glass-card max-w-md w-full rounded-3xl p-8 text-center relative shadow-2xl border border-emerald-500/50 glow-green animate-pop";
       } else {
-        emojiContainer.innerHTML = `<span class="animate-pulse">❌</span><span class="text-7xl">❎</span><span class="animate-pulse">💥</span>`;
-        title.innerHTML = `<span class="text-rose-400 font-black">JAWABAN SALAH!</span>`;
-        subtitle.innerHTML = `<span style="color: ${team.color};">${team.name} DIKURANGI -20 POIN!</span>`;
-        
-        detailBox.className = "p-4 rounded-2xl bg-rose-950/40 border border-rose-500/30 text-left text-xs space-y-2 mb-6";
-        detailBox.innerHTML = `
-          <div class="text-rose-300"><span class="font-bold text-rose-400">Jawaban Anda:</span> ${chosenFull}</div>
-          <div class="text-rose-400 font-bold flex items-center mt-2"><i class="fa-solid fa-triangle-exclamation mr-1.5 text-sm"></i> Sayang sekali jawaban Anda kurang tepat. Soal tetap diklaim oleh ${team.name} (-20 Skor).</div>
-        `;
-
-        feedbackCard.className = "glass-card max-w-md w-full rounded-3xl p-8 text-center relative shadow-2xl border border-rose-500/50 glow-red animate-pop";
+        emojiContainer.innerHTML = '💥 😅 ⚠️';
+        titleEl.innerText = title;
+        titleEl.className = "text-2xl sm:text-3xl font-black font-display mb-2 text-rose-400";
+        subtitleEl.innerText = teamObj ? `PENALTI -20 & SOAL TERKLAIM UNTUK ${teamObj.name.toUpperCase()}` : 'SOAL TERKLAIM!';
+        card.className = "glass-card max-w-md w-full rounded-3xl p-8 text-center relative shadow-2xl border border-rose-500/50 glow-red animate-pop";
       }
 
-      document.getElementById('modal-feedback').classList.remove('hidden');
+      detailBox.innerHTML = `
+        <p class="text-xs text-slate-200 leading-relaxed font-semibold">${message}</p>
+      `;
+
+      modal.classList.remove('hidden');
     }
 
     function closeFeedbackModal() {
       sound.playClick();
       document.getElementById('modal-feedback').classList.add('hidden');
-      renderQuestionsGrid();
-      renderLeaderboardBar();
-      renderTeacherSummaryTable();
+      closeQuestionModal();
     }
 
-    // --- POP-UP KONFIRMASI BATALKAN KLAIM (MODERN CUSTOM MODAL) ---
+    // --- FITUR BATALKAN KLAIM (SINGLE / ALL TEAM) DENGAN POP-UP INTERAKTIF ---
+    
+    // 1. Batalkan klaim 1 nomor soal
     function requestUnclaimQuestion(qIndex) {
-      if (qIndex === null || qIndex < 0 || qIndex >= QUESTIONS_BANK.length) return;
+      if (qIndex === null || qIndex === undefined) return;
+      
+      sound.playClick();
+      unclaimActionType = 'single';
+      pendingUnclaimIndex = qIndex;
       const q = QUESTIONS_BANK[qIndex];
-      if (!q || !q.claimedBy) {
-        alert("Soal ini belum diklaim oleh kelompok manapun.");
-        return;
+      const teamObj = q.claimedBy ? TEAMS[q.claimedBy] : null;
+
+      document.getElementById('unclaim-modal-title').innerText = "Batal Klaim Nomor Soal";
+      document.getElementById('unclaim-modal-subtitle').innerText = `Proses Reset Soal #${q.id}`;
+
+      const badgeEl = document.getElementById('unclaim-team-badge');
+      const penaltyEl = document.getElementById('unclaim-penalty-text');
+      const msgEl = document.getElementById('unclaim-dialog-msg');
+
+      if (teamObj) {
+        badgeEl.innerText = teamObj.name;
+        badgeEl.style.backgroundColor = teamObj.color;
+        penaltyEl.innerText = "RESET STATUS TERKLAIM";
+        msgEl.innerHTML = `Apakah Anda yakin ingin membatalkan klaim Soal <strong>#${q.id}</strong> oleh <strong style="color:${teamObj.color}">${teamObj.name}</strong>?<br><br>Status soal ini akan kembali menjadi <strong>bersih</strong> dan dapat diperebutkan ulang oleh semua kelompok secara bebas tanpa delay!`;
+      } else {
+        badgeEl.innerText = "Bersih / Belum Ada Klaim";
+        badgeEl.style.backgroundColor = "#334155";
+        penaltyEl.innerText = "SOAL BELUM TERKLAIM";
+        msgEl.innerHTML = `Soal <strong>#${q.id}</strong> belum memiliki klaim aktif. Membatalkan tidak akan merubah status.`;
       }
 
-      sound.playClick();
-      pendingUnclaimIndex = qIndex;
-      const team = TEAMS[q.claimedBy];
+      document.getElementById('modal-confirm-unclaim').classList.remove('hidden');
+    }
 
+    // 2. Batalkan semua klaim untuk kelompok tertentu (Panel Guru)
+    function requestUnclaimAllTeam(teamKey) {
+      sound.playClick();
+      unclaimActionType = 'team';
+      pendingUnclaimTeamKey = teamKey;
+
+      const teamObj = TEAMS[teamKey];
+      if (!teamObj) return;
+
+      document.getElementById('unclaim-modal-title').innerText = "Batal Klaim Semua Soal";
+      document.getElementById('unclaim-modal-subtitle').innerText = `Reset Klaim ${teamObj.name}`;
+
+      const badgeEl = document.getElementById('unclaim-team-badge');
+      const penaltyEl = document.getElementById('unclaim-penalty-text');
       const msgEl = document.getElementById('unclaim-dialog-msg');
-      msgEl.innerHTML = `
-        Apakah Anda yakin ingin membatalkan klaim <strong class="text-white">Soal #${q.id}</strong> yang saat ini diklaim oleh <strong style="color: ${team ? team.color : '#F59E0B'};">${team ? team.name : 'Kelompok'}</strong>?
-        <br><br>
-        <span class="text-[11px] text-slate-400">Status klaim akan dibersihkan dan nomor soal akan dapat diperebutkan kembali oleh semua kelompok.</span>
-      `;
+
+      badgeEl.innerText = teamObj.name;
+      badgeEl.style.backgroundColor = teamObj.color;
+      penaltyEl.innerText = `${teamObj.claimedCount} SOAL TERKLAIM`;
+      msgEl.innerHTML = `Apakah Anda yakin ingin membatalkan <strong>SEMUA (${teamObj.claimedCount}) soal</strong> yang telah terklaim oleh <strong style="color:${teamObj.color}">${teamObj.name}</strong>?<br><br>Seluruh soal milik ${teamObj.name} akan dikembalikan menjadi bersih secara instan!`;
 
       document.getElementById('modal-confirm-unclaim').classList.remove('hidden');
     }
@@ -1557,103 +1766,54 @@
     function closeUnclaimConfirmModal() {
       sound.playClick();
       pendingUnclaimIndex = null;
+      pendingUnclaimTeamKey = null;
+      unclaimActionType = null;
       document.getElementById('modal-confirm-unclaim').classList.add('hidden');
     }
 
-    function executeUnclaimQuestion() {
-      if (pendingUnclaimIndex === null) return;
+    function executeUnclaimAction() {
       sound.playClick();
-      const q = QUESTIONS_BANK[pendingUnclaimIndex];
 
-      if (q && q.claimedBy && TEAMS[q.claimedBy]) {
-        TEAMS[q.claimedBy].claimedCount = Math.max(0, TEAMS[q.claimedBy].claimedCount - 1);
-      }
+      if (unclaimActionType === 'single' && pendingUnclaimIndex !== null) {
+        const q = QUESTIONS_BANK[pendingUnclaimIndex];
 
-      if (q) {
+        if (q.claimedBy && TEAMS[q.claimedBy]) {
+          const teamObj = TEAMS[q.claimedBy];
+          teamObj.claimedCount = Math.max(0, teamObj.claimedCount - 1);
+        }
+
         q.claimedBy = null;
+        activeTeam = null;
+
+        renderQuestionsGrid();
+        renderLeaderboardBar();
+        renderTeacherSummaryTable();
+        updateActiveTeamIndicator();
+
+        closeUnclaimConfirmModal();
+        closeQuestionModal();
+      } 
+      else if (unclaimActionType === 'team' && pendingUnclaimTeamKey !== null) {
+        const teamObj = TEAMS[pendingUnclaimTeamKey];
+        if (teamObj) {
+          QUESTIONS_BANK.forEach(q => {
+            if (q.claimedBy === pendingUnclaimTeamKey) {
+              q.claimedBy = null;
+            }
+          });
+          teamObj.claimedCount = 0;
+
+          renderQuestionsGrid();
+          renderLeaderboardBar();
+          renderTeacherSummaryTable();
+          updateActiveTeamIndicator();
+        }
+
+        closeUnclaimConfirmModal();
       }
-
-      activeTeam = null;
-      pendingUnclaimIndex = null;
-
-      closeUnclaimConfirmModal();
-      closeQuestionModal();
-      renderQuestionsGrid();
-      renderTeacherSummaryTable();
-      renderLeaderboardBar();
     }
 
-    function downloadCSVReport() {
-      sound.playClick();
-      let csvContent = "data:text/csv;charset=utf-8,Kelompok,Soal Terklaim,Total Skor\n";
-      Object.values(TEAMS).forEach(team => {
-        csvContent += `"${team.name}",${team.claimedCount},${team.score}\n`;
-      });
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `rekap_nilai_${appConfig.kelas.replace(/\s+/g, '_')}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    }
-
-    function downloadCertificate() {
-      sound.playClick();
-      const teamId = document.getElementById('select-certificate-team').value;
-      const team = TEAMS[teamId];
-      const canvas = document.getElementById('cert-canvas');
-      const ctx = canvas.getContext('2d');
-
-      ctx.fillStyle = "#0F172A";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.strokeStyle = "#F59E0B";
-      ctx.lineWidth = 8;
-      ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
-
-      ctx.fillStyle = "#F8FAFC";
-      ctx.font = "bold 36px 'Orbitron', sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("SERTIFIKAT PENGHARGAAN", canvas.width / 2, 140);
-
-      ctx.font = "20px 'Plus Jakarta Sans', sans-serif";
-      ctx.fillStyle = "#94A3B8";
-      ctx.fillText("ARENA FOR CHAMPIONS — " + appConfig.kelas.toUpperCase(), canvas.width / 2, 185);
-
-      ctx.font = "24px 'Plus Jakarta Sans', sans-serif";
-      ctx.fillStyle = "#F8FAFC";
-      ctx.fillText("Diberikan Dengan Bangga Kepada:", canvas.width / 2, 270);
-
-      ctx.font = "bold 56px 'Orbitron', sans-serif";
-      ctx.fillStyle = team.color;
-      ctx.fillText(team.name.toUpperCase(), canvas.width / 2, 360);
-
-      ctx.font = "22px 'Plus Jakarta Sans', sans-serif";
-      ctx.fillStyle = "#CBD5E1";
-      ctx.fillText(`Atas Prestasi Gemilang dalam Pembelajaran ${appConfig.mapel}`, canvas.width / 2, 440);
-
-      ctx.font = "bold 28px 'Orbitron', sans-serif";
-      ctx.fillStyle = "#F59E0B";
-      ctx.fillText(`TOTAL SKOR AKHIR: ${team.score} POIN`, canvas.width / 2, 510);
-
-      ctx.font = "18px 'Plus Jakarta Sans', sans-serif";
-      ctx.fillStyle = "#94A3B8";
-      ctx.fillText("Guru Pengampu / Fasilitator Kelas", canvas.width / 2, 680);
-      ctx.strokeStyle = "#475569";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(canvas.width / 2 - 150, 640);
-      ctx.lineTo(canvas.width / 2 + 150, 640);
-      ctx.stroke();
-
-      const link = document.createElement('a');
-      link.download = `Sertifikat_${team.name.replace(/\s+/g, '_')}.png`;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
-      link.remove();
-    }
-
+    // --- PANEL GURU & TABEL SUMMARY ---
     function openTeacherModal() {
       sound.playClick();
       renderTeacherSummaryTable();
@@ -1663,88 +1823,124 @@
     function closeTeacherModal() {
       sound.playClick();
       document.getElementById('modal-teacher').classList.add('hidden');
-      renderLeaderboardBar();
-      renderQuestionsGrid();
-    }
-
-    function confirmResetQuestions() {
-      if (confirm("Hapus seluruh klaim soal dan reset skor seluruh kelompok ke 0?")) {
-        QUESTIONS_BANK.forEach(q => { q.claimedBy = null; });
-        Object.values(TEAMS).forEach(t => { t.score = 0; t.claimedCount = 0; });
-        activeTeam = null;
-        sound.playClick();
-        renderTeacherSummaryTable();
-        renderQuestionsGrid();
-        renderLeaderboardBar();
-        closeTeacherModal();
-        alert("Seluruh klaim soal dan skor telah dihapus / di-reset total.");
-      }
     }
 
     function renderTeacherSummaryTable() {
       const tbody = document.getElementById('teacher-summary-table');
+      if (!tbody) return;
       tbody.innerHTML = '';
-      Object.values(TEAMS).forEach(team => {
+
+      Object.values(TEAMS).forEach(t => {
         const tr = document.createElement('tr');
-        tr.className = "border-b border-slate-800/80 hover:bg-slate-900/60 transition";
+        tr.className = "border-b border-slate-800/60 hover:bg-slate-900/40 transition";
         tr.innerHTML = `
           <td class="p-3 font-bold flex items-center space-x-2">
-            <span class="w-3 h-3 rounded-full" style="background-color: ${team.color};"></span>
-            <span style="color: ${team.color};">${team.name}</span>
+            <span class="w-3 h-3 rounded-full" style="background-color: ${t.color}"></span>
+            <span>${t.name}</span>
           </td>
-          <td class="p-3 font-extrabold text-slate-300">${team.claimedCount} Soal</td>
-          <td class="p-3 font-black font-display text-amber-400 text-center">${team.score} PTS</td>
+          <td class="p-3 font-mono font-bold text-amber-400">${t.claimedCount} Soal</td>
+          <td class="p-3 text-center font-black font-display text-amber-300">${t.score} PTS</td>
+          <td class="p-3 text-center">
+            <button onclick="requestUnclaimAllTeam('${t.id}')" class="px-3 py-1.5 rounded-xl bg-rose-950 hover:bg-rose-900 text-rose-300 border border-rose-800/80 font-extrabold text-xs shadow transition active:scale-95 flex items-center justify-center mx-auto">
+              <i class="fa-solid fa-rotate-left mr-1.5 text-rose-400"></i>Batal Klaim Semua
+            </button>
+          </td>
           <td class="p-3 text-right">
-            <button onclick="adjustScore('${team.id}', 50)" class="px-2.5 py-1 rounded bg-emerald-950 text-emerald-300 hover:bg-emerald-900 font-bold text-xs mr-1">+50</button>
-            <button onclick="adjustScore('${team.id}', -20)" class="px-2.5 py-1 rounded bg-rose-950 text-rose-300 hover:bg-rose-900 font-bold text-xs">-20</button>
+            <div class="flex items-center justify-end space-x-1">
+              <button onclick="adjustTeamScore('${t.id}', -50)" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-rose-400 font-black text-xs border border-slate-700">-50</button>
+              <button onclick="adjustTeamScore('${t.id}', 50)" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-emerald-400 font-black text-xs border border-slate-700">+50</button>
+            </div>
           </td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    function adjustScore(teamId, amount) {
+    function adjustTeamScore(teamKey, delta) {
       sound.playClick();
-      TEAMS[teamId].score += amount;
-      renderTeacherSummaryTable();
-      renderLeaderboardBar();
+      if (TEAMS[teamKey]) {
+        TEAMS[teamKey].score = Math.max(0, TEAMS[teamKey].score + delta);
+        renderTeacherSummaryTable();
+        renderLeaderboardBar();
+      }
     }
 
-    function finishSession() {
-      sound.playVictory();
-      const sortedTeams = Object.values(TEAMS).sort((a, b) => b.score - a.score);
-      const podium = document.getElementById('podium-container');
-      podium.innerHTML = '';
+    function confirmResetQuestions() {
+      if (confirm("Apakah Anda yakin ingin mereset seluruh skor dan klaim soal?")) {
+        sound.playClick();
+        Object.values(TEAMS).forEach(t => {
+          t.score = 0;
+          t.claimedCount = 0;
+        });
+        QUESTIONS_BANK.forEach(q => { q.claimedBy = null; });
 
-      const ranks = [
-        { place: 2, team: sortedTeams[1], height: 'h-28', color: 'bg-slate-800 border-slate-700' },
-        { place: 1, team: sortedTeams[0], height: 'h-36', color: 'bg-amber-500/20 border-amber-500/50 glow-gold' },
-        { place: 3, team: sortedTeams[2], height: 'h-24', color: 'bg-slate-900 border-slate-800' }
-      ];
+        renderQuestionsGrid();
+        renderLeaderboardBar();
+        renderTeacherSummaryTable();
+        closeTeacherModal();
+      }
+    }
 
-      ranks.forEach(r => {
-        if (!r.team) return;
-        const col = document.createElement('div');
-        col.className = `flex flex-col items-center justify-end p-3 rounded-2xl border ${r.height} ${r.color}`;
-        col.innerHTML = `
-          <span class="text-xs font-black font-display text-amber-300 mb-1">#${r.place}</span>
-          <span class="w-4 h-4 rounded-full mb-1" style="background-color: ${r.team.color};"></span>
-          <span class="text-[11px] font-bold text-white text-center truncate w-full">${r.team.name}</span>
-          <span class="text-xs font-black text-amber-400 mt-1">${r.team.score} PTS</span>
-        `;
-        podium.appendChild(col);
+    function downloadCSVReport() {
+      sound.playClick();
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "Kelompok,Soal Terklaim,Total Skor\n";
+
+      Object.values(TEAMS).forEach(t => {
+        csvContent += `"${t.name}",${t.claimedCount},${t.score}\n`;
       });
 
-      const allScores = document.getElementById('victory-all-scores');
-      allScores.innerHTML = `<h4 class="text-xs font-black text-slate-400 uppercase tracking-wider mb-2">Peringkat Lengkap Kelompok:</h4>`;
-      sortedTeams.forEach((t, idx) => {
-        const row = document.createElement('div');
-        row.className = "flex items-center justify-between text-xs py-1.5 border-b border-slate-800/60";
-        row.innerHTML = `
-          <span class="font-bold flex items-center"><span class="w-5 text-slate-500">#${idx+1}</span> <span class="w-3 h-3 rounded-full mr-2" style="background-color: ${t.color};"></span> ${t.name}</span>
-          <span class="font-black font-display text-amber-400">${t.score} PTS (${t.claimedCount} Soal)</span>
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `Rekap_Arena_Champions_${appConfig.kelas}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+
+    // --- HASIL AKHIR & PODIUM PEMENANG ---
+    function finishSession() {
+      sound.playVictory();
+      
+      const sortedTeams = Object.values(TEAMS).sort((a, b) => b.score - a.score);
+      const podiumContainer = document.getElementById('podium-container');
+      podiumContainer.innerHTML = '';
+
+      // Tampilkan Top 3
+      const top3 = [sortedTeams[1], sortedTeams[0], sortedTeams[2]]; // Urutan podium: Juara 2, Juara 1, Juara 3
+      const podiumHeights = ["h-28", "h-36", "h-24"];
+      const podiumBadges = ["🥈 Juara 2", "🏆 JUARA 1", "🥉 Juara 3"];
+
+      top3.forEach((team, idx) => {
+        if (!team) return;
+        const col = document.createElement('div');
+        col.className = "flex flex-col items-center justify-end";
+        col.innerHTML = `
+          <span class="text-xs font-black text-white mb-1">${team.name.replace('Kelompok ', '')}</span>
+          <span class="text-xs font-black font-display text-amber-300 mb-2">${team.score} PTS</span>
+          <div class="w-full ${podiumHeights[idx]} rounded-t-2xl flex flex-col items-center justify-center p-2 text-slate-950 font-black text-xs shadow-lg glow-gold" style="background-color: ${team.color}">
+            <span>${podiumBadges[idx]}</span>
+          </div>
         `;
-        allScores.appendChild(row);
+        podiumContainer.appendChild(col);
+      });
+
+      // Render Semua Skor
+      const scoresContainer = document.getElementById('victory-all-scores');
+      scoresContainer.innerHTML = `<h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Peringkat Lengkap:</h4>`;
+      
+      sortedTeams.forEach((t, i) => {
+        const item = document.createElement('div');
+        item.className = "flex items-center justify-between text-xs font-bold p-2 rounded-lg bg-slate-950/60 border border-slate-800";
+        item.innerHTML = `
+          <div class="flex items-center space-x-2">
+            <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black bg-slate-800 text-amber-400">#${i + 1}</span>
+            <span style="color: ${t.color}">${t.name}</span>
+          </div>
+          <span class="font-display font-black text-amber-300">${t.score} PTS (${t.claimedCount} Soal)</span>
+        `;
+        scoresContainer.appendChild(item);
       });
 
       document.getElementById('modal-victory').classList.remove('hidden');
@@ -1753,6 +1949,80 @@
     function closeVictoryModal() {
       sound.playClick();
       document.getElementById('modal-victory').classList.add('hidden');
+    }
+
+    // --- UNDUH SERTIFIKAT PNG ---
+    function downloadCertificate() {
+      sound.playClick();
+      const teamKey = document.getElementById('select-certificate-team').value;
+      const team = TEAMS[teamKey];
+      if (!team) return;
+
+      const canvas = document.getElementById('cert-canvas');
+      const ctx = canvas.getContext('2d');
+
+      // Background
+      ctx.fillStyle = "#0F172A";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Border Outer
+      ctx.strokeStyle = "#F59E0B";
+      ctx.lineWidth = 12;
+      ctx.strokeRect(30, 30, canvas.width - 60, canvas.height - 60);
+
+      // Inner Frame
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(50, 50, canvas.width - 100, canvas.height - 100);
+
+      // Header Text
+      ctx.fillStyle = "#F59E0B";
+      ctx.font = "bold 42px Orbitron, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("SERTIFIKAT PENGHARGAAN", canvas.width / 2, 140);
+
+      ctx.fillStyle = "#94A3B8";
+      ctx.font = "bold 20px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText("ARENA FOR CHAMPIONS COMPETITION", canvas.width / 2, 180);
+
+      // Recipient Text
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = "22px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText("Diberikan Kepada:", canvas.width / 2, 260);
+
+      ctx.fillStyle = team.color;
+      ctx.font = "black 54px Orbitron, sans-serif";
+      ctx.fillText(team.name.toUpperCase(), canvas.width / 2, 340);
+
+      ctx.fillStyle = "#E2E8F0";
+      ctx.font = "20px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText(`Atas Pencapaian Luar Biasa Pada Materi: ${appConfig.mapel}`, canvas.width / 2, 420);
+      ctx.fillText(`Tingkat: ${appConfig.kelas}`, canvas.width / 2, 455);
+
+      // Score Box
+      ctx.fillStyle = "#1E293B";
+      ctx.fillRect(canvas.width / 2 - 180, 500, 360, 90);
+      ctx.strokeStyle = "#F59E0B";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(canvas.width / 2 - 180, 500, 360, 90);
+
+      ctx.fillStyle = "#F59E0B";
+      ctx.font = "bold 36px Orbitron, sans-serif";
+      ctx.fillText(`${team.score} PTS`, canvas.width / 2, 558);
+
+      // Signature & Footer
+      ctx.fillStyle = "#64748B";
+      ctx.font = "16px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText("Diterbitkan Secara Otomatis Oleh Engine Arena for Champions", canvas.width / 2, 740);
+
+      // Download Trigger
+      const imageUri = canvas.toDataURL("image/png");
+      const dlLink = document.createElement("a");
+      dlLink.download = `Sertifikat_${team.name.replace(/\s+/g, '_')}.png`;
+      dlLink.href = imageUri;
+      document.body.appendChild(dlLink);
+      dlLink.click();
+      dlLink.remove();
     }
   </script>
 </body>
