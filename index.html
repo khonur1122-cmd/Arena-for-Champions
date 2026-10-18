@@ -64,7 +64,7 @@
     .glow-purple { box-shadow: 0 0 20px rgba(168, 85, 247, 0.4); }
     @keyframes pulseGlow {
       0%, 100% { opacity: 0.8; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.02); }
+      50% { opacity: 1; transform: scale(1.03); }
     }
     .animate-pulse-glow { animation: pulseGlow 2.5s infinite ease-in-out; }
     @keyframes floatSlow {
@@ -72,6 +72,14 @@
       50% { transform: translateY(-8px); }
     }
     .animate-float { animation: floatSlow 3.5s ease-in-out infinite; }
+    @keyframes flowArrow {
+      0% { stroke-dashoffset: 20; }
+      100% { stroke-dashoffset: 0; }
+    }
+    .animate-flow {
+      stroke-dasharray: 6 4;
+      animation: flowArrow 1s linear infinite;
+    }
     @keyframes popBounce {
       0% { transform: scale(0.3); opacity: 0; }
       50% { transform: scale(1.1); opacity: 1; }
@@ -182,7 +190,7 @@
             ⚔️ Arena Kuis Rebutan Soal
           </h2>
           <p class="text-xs text-slate-300 mt-1">
-            Klik nomor soal ➔ Tekan Buzzer Kelompok ➔ Jawab cepat dalam 10 detik!
+            Klik nomor soal ➔ Tekan Buzzer Kelompok ➔ Jawab cepat dalam 30 detik!
           </p>
         </div>
 
@@ -252,7 +260,7 @@
           SOAL REBUTAN #1
         </span>
         <div id="modal-q-timer" class="text-sm font-black font-display text-amber-400 bg-amber-950/80 border border-amber-800/80 px-3.5 py-1 rounded-xl flex items-center">
-          <i class="fa-solid fa-stopwatch mr-2 animate-spin"></i><span id="timer-count">10</span> Detik
+          <i class="fa-solid fa-stopwatch mr-2 animate-spin"></i><span id="timer-count">30</span> Detik
         </div>
       </div>
 
@@ -612,7 +620,7 @@
     let isGamePaused = false;
     let currentActiveQuestionIndex = null;
     let timerInterval = null;
-    let timerSecondsLeft = 10;
+    let timerSecondsLeft = 30; // Updated to 30 Seconds
     let questionStartTime = 0;
 
     let appConfig = {
@@ -620,14 +628,16 @@
       mapel: "Ekosistem & Lingkungan"
     };
 
-    // MODUL MATERI DEFAULT
+    // MODUL MATERI DEFAULT TERIkat DENGAN sectionId & visualId UNIK
     let MATERI_MODULES = [
       {
+        sectionId: "sec-eko-komponen-1",
+        visualId: "vis-eko-biotik-abiotik",
         subBab: 1,
         title: "Pengertian & Komponen Ekosistem",
         infoBox: {
           header: "Apa Itu Ekosistem?",
-          text: "Ekosistem adalah <strong>hubungan timbal balik (saling mempengaruhi)</strong> antara makhluk hidup dengan lingkungan sekitarnya. Tidak ada makhluk hidup yang bisa hidup sendirian!"
+          text: "Ekosistem adalah <strong>hubungan timbal balik (saling mempengaruhi)</strong> antara makhluk hidup dengan lingkungan sekitarnya. Komponen Biotik (hidup) bergantung pada Komponen Abiotik (tak hidup)."
         },
         points: [
           {
@@ -645,32 +655,88 @@
             example: "Contoh: Cahaya Matahari, Air, Udara, Tanah, Suhu."
           }
         ],
-        visualLabel: "Interaksi Biotik & Abiotik"
+        visualLabel: "Visualisasi Interaksi Biotik & Abiotik"
       },
       {
+        sectionId: "sec-eko-rantai-2",
+        visualId: "vis-eko-rantai-makanan",
         subBab: 2,
         title: "Rantai Makanan & Jaring-Jaring Makanan",
         infoBox: {
           header: "Aliran Energi Ekosistem",
-          text: "Rantai makanan adalah peristiwa <strong>makan dan dimakan</strong> antar makhluk hidup dengan urutan tertentu. Energi berpindah dari produsen ke konsumen hingga pengurai."
+          text: "Rantai makanan adalah proses <strong>makan dan dimakan secara berurutan</strong>. Energi berpindah secara sistematis: Sinar Matahari ➔ Padi (Produsen) ➔ Belalang (Konsumen I) ➔ Katak (Konsumen II) ➔ Pengurai."
         },
         points: [
           {
             icon: "fa-seedling",
             title: "Produsen & Konsumen",
             colorClass: "border-amber-500/30 text-amber-400 bg-amber-950/20",
-            desc: "Tumbuhan hijau (produsen) menghasilkan makanan sendiri lewat fotosintesis.",
-            example: "Contoh: Padi (Produsen) ➔ Belalang (Konsumen I) ➔ Katak (Konsumen II)."
+            desc: "Tumbuhan (produsen) memproduksi makanan sendiri lewat fotosintesis yang dimakan konsumen.",
+            example: "Urutan: Padi ➔ Belalang ➔ Katak."
           },
           {
             icon: "fa-bacteria",
             title: "Pengurai (Dekomposer)",
             colorClass: "border-purple-500/30 text-purple-400 bg-purple-950/20",
-            desc: "Organisme yang menguraikan bangkai dan sisa makhluk hidup menjadi hara tanah.",
-            example: "Contoh: Jamur kayu, Bakteri pembusuk tanah."
+            desc: "Organisme yang menguraikan bangkai makhluk hidup kembali menjadi nutrisi tanah.",
+            example: "Contoh: Jamur kayu & Bakteri pembusuk."
           }
         ],
-        visualLabel: "Aliran Energi & Rantai Makanan"
+        visualLabel: "Urutan Proses Rantai Makanan Berantai"
+      },
+      {
+        sectionId: "sec-eko-fotosintesis-3",
+        visualId: "vis-eko-proses-fotosintesis",
+        subBab: 3,
+        title: "Proses Fotosintesis Pada Tumbuhan",
+        infoBox: {
+          header: "Pembuatan Makanan Mandiri",
+          text: "Fotosintesis adalah proses tumbuhan hijau memasak makanan sendiri. Tumbuhan menyerap <strong>Air ($H_2O$) dari tanah</strong> dan <strong>Karbondioksida ($CO_2$) dari udara</strong> dengan bantuan <strong>Cahaya Matahari</strong> menghasilkan <strong>Glukosa & Oksigen ($O_2$)</strong>."
+        },
+        points: [
+          {
+            icon: "fa-leaf",
+            title: "Klorofil & Cahaya",
+            colorClass: "border-green-500/30 text-green-400 bg-green-950/20",
+            desc: "Zat hijau daun (klorofil) menangkap energi radiasi sinar matahari.",
+            example: "Bahan Masuk: Air + $CO_2$ + Cahaya."
+          },
+          {
+            icon: "fa-wind",
+            title: "Hasil Utama Fotosintesis",
+            colorClass: "border-teal-500/30 text-teal-400 bg-teal-950/20",
+            desc: "Menghasilkan Oksigen segar yang dihirup manusia dan karbohidrat bagi tumbuhan.",
+            example: "Hasil Keluar: Glukosa + Oksigen ($O_2$)."
+          }
+        ],
+        visualLabel: "Urutan Langkah Proses Fotosintesis Tumbuhan"
+      },
+      {
+        sectionId: "sec-eko-siklusair-4",
+        visualId: "vis-eko-siklus-air",
+        subBab: 4,
+        title: "Siklus Air & Keseimbangan Lingkungan",
+        infoBox: {
+          header: "Daur Air Bumi",
+          text: "Siklus air adalah sirkulasi air berkelanjutan. Panas matahari menyebabkan <strong>Evaporasi (Penguapan)</strong> ➔ Membentuk Awan melalui <strong>Kondensasi (Pengembunan)</strong> ➔ Turun <strong>Presipitasi (Hujan)</strong> ➔ Air meresap ke tanah <strong>(Infiltrasi)</strong>."
+        },
+        points: [
+          {
+            icon: "fa-cloud-sun-rain",
+            title: "Evaporasi & Kondensasi",
+            colorClass: "border-blue-500/30 text-blue-400 bg-blue-950/20",
+            desc: "Air laut/danau menguap karena sinar matahari lalu berkumpul menjadi awan tebal.",
+            example: "Langkah 1 & 2: Penguapan ➔ Pembentukan Awan."
+          },
+          {
+            icon: "fa-droplet",
+            title: "Presipitasi & Infiltrasi",
+            colorClass: "border-cyan-500/30 text-cyan-400 bg-cyan-950/20",
+            desc: "Awan jenuh menurunkan butir air hujan yang diserap tanah dan kembali ke laut.",
+            example: "Langkah 3 & 4: Hujan ➔ Penyerapan Tanah."
+          }
+        ],
+        visualLabel: "Urutan Tahapan Daur/Siklus Air"
       }
     ];
 
@@ -749,46 +815,145 @@
       alert("Informasi kelas dan mata pelajaran berhasil diperbarui!");
     }
 
-    // --- GENERATOR ANIMASI ADAPTIF ---
-    function getAdaptiveAnimationSVG(text) {
-      const lower = text.toLowerCase();
-      
-      if (lower.includes('air') || lower.includes('siklus') || lower.includes('hujan')) {
+    // --- GENERATOR ANIMASI ADAPTIF & SINKRON MATERI ---
+    // Menganalisis objek, proses, sectionId, & visualId secara presisi
+    function getAdaptiveAnimationSVG(data) {
+      const lowerText = (JSON.stringify(data) + " " + (data.sectionId || "") + " " + (data.visualId || "")).toLowerCase();
+
+      // 1. ANIMASI PROSES SIKLUS AIR / DAUR AIR
+      if (data.visualId === "vis-eko-siklus-air" || lowerText.includes("siklus air") || lowerText.includes("daur air") || lowerText.includes("evaporasi")) {
         return `
-          <svg class="w-full max-w-xs h-64" viewBox="0 0 300 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="230" cy="50" r="28" fill="#F59E0B" class="animate-pulse-glow" />
-            <path d="M40 60 Q70 40 100 60 Q130 40 160 60 H40 Z" fill="#93C5FD" opacity="0.9" class="animate-float"/>
-            <path d="M0 170 Q150 140 300 170 V240 H0 Z" fill="#3B82F6"/>
-            <path d="M100 80 Q110 100 100 120" stroke="#60A5FA" stroke-width="3" stroke-dasharray="4 4" class="animate-pulse"/>
-            <text x="75" y="215" fill="white" font-size="11" font-weight="bold">Interaksi Siklus Air</text>
+          <svg class="w-full max-w-sm h-64" viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Matahari -->
+            <circle cx="270" cy="45" r="24" fill="#F59E0B" class="animate-pulse-glow" />
+            
+            <!-- Laut / Perairan -->
+            <path d="M0 180 Q160 160 320 180 V240 H0 Z" fill="#2563EB"/>
+            <text x="10" y="215" fill="#E0F2FE" font-size="10" font-weight="extrabold">1. Laut/Danau (Air)</text>
+
+            <!-- Awan Kondensasi -->
+            <g class="animate-float">
+              <path d="M70 65 Q90 45 120 65 Q140 45 160 65 H70 Z" fill="#93C5FD" opacity="0.9"/>
+              <text x="80" y="55" fill="#1E293B" font-size="9" font-weight="bold">2. Awan (Kondensasi)</text>
+            </g>
+
+            <!-- Evaporasi (Uap Naik) -->
+            <path d="M220 165 Q230 120 220 85" stroke="#FBBF24" stroke-width="3" stroke-linecap="round" class="animate-flow"/>
+            <text x="215" y="130" fill="#FBBF24" font-size="9" font-weight="bold">Evaporasi ➔</text>
+
+            <!-- Hujan (Presipitasi) -->
+            <line x1="90" y1="80" x2="85" y2="120" stroke="#38BDF8" stroke-width="2" stroke-dasharray="4 4" class="animate-pulse"/>
+            <line x1="110" y1="80" x2="105" y2="120" stroke="#38BDF8" stroke-width="2" stroke-dasharray="4 4" class="animate-pulse"/>
+            <line x1="130" y1="80" x2="125" y2="120" stroke="#38BDF8" stroke-width="2" stroke-dasharray="4 4" class="animate-pulse"/>
+            <text x="25" y="105" fill="#38BDF8" font-size="9" font-weight="bold">3. Presipitasi (Hujan)</text>
+
+            <!-- Infiltrasi -->
+            <path d="M40 180 Q50 200 60 220" stroke="#10B981" stroke-width="2" stroke-dasharray="3 3"/>
+            <text x="65" y="232" fill="#10B981" font-size="8" font-weight="bold">4. Infiltrasi (Tanah)</text>
           </svg>
         `;
       }
 
+      // 2. ANIMASI URUTAN PROSES RANTAI MAKANAN
+      if (data.visualId === "vis-eko-rantai-makanan" || lowerText.includes("rantai makanan") || lowerText.includes("produsen")) {
+        return `
+          <svg class="w-full max-w-sm h-64" viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Langkah 1: Sinar Matahari -->
+            <circle cx="45" cy="40" r="18" fill="#F59E0B" class="animate-pulse-glow"/>
+            <text x="15" y="70" fill="#FCD34D" font-size="9" font-weight="extrabold">1. Energi Surya</text>
+
+            <!-- Langkah 2: Produsen (Padi/Tumbuhan) -->
+            <rect x="20" y="140" width="55" height="50" rx="8" fill="#065F46" stroke="#34D399" stroke-width="2"/>
+            <text x="28" y="165" fill="#A7F3D0" font-size="10" font-weight="black">Padi</text>
+            <text x="24" y="180" fill="#6EE7B7" font-size="8">(Produsen)</text>
+
+            <!-- Panah 1 -->
+            <path d="M80 165 H105" stroke="#F59E0B" stroke-width="3" stroke-linecap="round" class="animate-flow"/>
+
+            <!-- Langkah 3: Konsumen I (Belalang/Serangga) -->
+            <rect x="110" y="140" width="60" height="50" rx="8" fill="#92400E" stroke="#FBBF24" stroke-width="2"/>
+            <text x="116" y="165" fill="#FDE68A" font-size="10" font-weight="black">Belalang</text>
+            <text x="115" y="180" fill="#FCD34D" font-size="8">(Konsumen I)</text>
+
+            <!-- Panah 2 -->
+            <path d="M175 165 H200" stroke="#F59E0B" stroke-width="3" stroke-linecap="round" class="animate-flow"/>
+
+            <!-- Langkah 4: Konsumen II (Katak/Predator) -->
+            <rect x="205" y="140" width="55" height="50" rx="8" fill="#1E3A8A" stroke="#60A5FA" stroke-width="2"/>
+            <text x="216" y="165" fill="#BFDBFE" font-size="10" font-weight="black">Katak</text>
+            <text x="210" y="180" fill="#93C5FD" font-size="8">(Konsumen II)</text>
+
+            <!-- Panah Ke Pengurai -->
+            <path d="M232 135 Q232 80 160 80 Q90 80 90 120" stroke="#A855F7" stroke-width="2" stroke-dasharray="4 4"/>
+
+            <!-- Langkah 5: Dekomposer / Pengurai -->
+            <rect x="125" y="55" width="70" height="40" rx="8" fill="#581C87" stroke="#C084FC" stroke-width="2"/>
+            <text x="135" y="75" fill="#E9D5FF" font-size="9" font-weight="black">Pengurai</text>
+            <text x="132" y="88" fill="#D8B4FE" font-size="7">(Jamur/Bakteri)</text>
+          </svg>
+        `;
+      }
+
+      // 3. ANIMASI PROSES FOTOSINTESIS
+      if (data.visualId === "vis-eko-proses-fotosintesis" || lowerText.includes("fotosintesis") || lowerText.includes("klorofil")) {
+        return `
+          <svg class="w-full max-w-sm h-64" viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Matahari -->
+            <circle cx="50" cy="45" r="22" fill="#F59E0B" class="animate-pulse-glow" />
+            <path d="M75 55 L120 85" stroke="#FBBF24" stroke-width="3" stroke-linecap="round" class="animate-flow"/>
+            <text x="80" y="65" fill="#FCD34D" font-size="9" font-weight="bold">Sinar Matahari</text>
+
+            <!-- Batang & Daun Tumbuhan -->
+            <path d="M160 210 V110" stroke="#78350F" stroke-width="8" stroke-linecap="round"/>
+            <path d="M160 130 Q220 110 210 150 Q160 170 160 130 Z" fill="#10B981" class="animate-float"/>
+            <path d="M160 150 Q100 130 110 170 Q160 190 160 150 Z" fill="#059669" class="animate-float"/>
+
+            <!-- Masukan CO2 -->
+            <path d="M40 140 H100" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" class="animate-flow"/>
+            <text x="35" y="132" fill="#38BDF8" font-size="10" font-weight="black">Karbondioksida (CO2)</text>
+
+            <!-- Hasil Keluar O2 -->
+            <path d="M210 135 H275" stroke="#34D399" stroke-width="3" stroke-linecap="round" class="animate-flow"/>
+            <text x="215" y="125" fill="#34D399" font-size="10" font-weight="black">Oksigen (O2)</text>
+
+            <!-- Masukan Air (H2O) Dari Akar -->
+            <path d="M160 240 V200" stroke="#60A5FA" stroke-width="4" stroke-dasharray="4 4" class="animate-pulse"/>
+            <text x="170" y="230" fill="#93C5FD" font-size="9" font-weight="bold">Air (H2O) Akar</text>
+          </svg>
+        `;
+      }
+
+      // 4. ANIMASI INTERAKSI BIOTIK & ABIOTIK (DEFAULT / GENERIC ADAPTIVE)
       return `
-        <svg class="w-full max-w-xs h-64" viewBox="0 0 300 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="240" cy="50" r="28" fill="#F59E0B" class="animate-pulse-glow" />
-          <path d="M240 10V18M240 82V90M200 50H208M272 50H280" stroke="#F59E0B" stroke-width="4" stroke-linecap="round"/>
-          <path d="M50 55 Q70 40 90 55 Q110 40 130 55 H50 Z" fill="#93C5FD" opacity="0.8" class="animate-float"/>
-          <path d="M0 150 Q150 110 300 150 V240 H0 Z" fill="#15803D"/>
-          <path d="M0 180 Q150 145 300 180 V240 H0 Z" fill="#78350F"/>
-          <circle cx="95" cy="120" r="28" fill="#10B981" class="animate-float"/>
-          <rect x="89" y="140" width="12" height="40" fill="#451A03"/>
-          <rect x="25" y="20" width="120" height="26" rx="6" fill="#10B981"/>
-          <text x="32" y="37" fill="white" font-size="10" font-weight="black">BIOTIK (Tumbuhan)</text>
-          <rect x="180" y="180" width="105" height="26" rx="6" fill="#0284C7"/>
-          <text x="190" y="197" fill="white" font-size="10" font-weight="black">ABIOTIK (Air)</text>
+        <svg class="w-full max-w-sm h-64" viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="260" cy="45" r="24" fill="#F59E0B" class="animate-pulse-glow" />
+          <path d="M40 50 Q60 35 80 50 Q100 35 120 50 H40 Z" fill="#93C5FD" opacity="0.85" class="animate-float"/>
+          
+          <!-- Latar Darat & Air -->
+          <path d="M0 160 Q160 130 320 160 V240 H0 Z" fill="#15803D"/>
+          <path d="M180 180 Q250 160 320 180 V240 H180 Z" fill="#0284C7"/>
+
+          <!-- Pohon (Biotik) -->
+          <circle cx="95" cy="120" r="26" fill="#10B981" class="animate-float"/>
+          <rect x="89" y="140" width="12" height="35" fill="#451A03"/>
+
+          <!-- Tag Komponen -->
+          <rect x="25" y="20" width="130" height="26" rx="6" fill="#10B981"/>
+          <text x="32" y="37" fill="white" font-size="10" font-weight="black">BIOTIK (Makhluk Hidup)</text>
+
+          <rect x="180" y="195" width="120" height="26" rx="6" fill="#0284C7"/>
+          <text x="190" y="212" fill="white" font-size="10" font-weight="black">ABIOTIK (Benda Mati)</text>
         </svg>
       `;
     }
 
-    // --- RENDER MATERI ---
+    // --- RENDER MATERI SINKRON & PERSISI ---
     function renderMateri() {
       const data = MATERI_MODULES[currentSubBab];
       document.getElementById('subbab-badge').innerText = `Sub-Bab ${currentSubBab + 1} Dari ${MATERI_MODULES.length}`;
       document.getElementById('subbab-title').innerText = data.title;
 
-      const svgAnimationHtml = getAdaptiveAnimationSVG(JSON.stringify(data));
+      const svgAnimationHtml = getAdaptiveAnimationSVG(data);
 
       let pointsHtml = '';
       data.points.forEach(pt => {
@@ -822,9 +987,12 @@
               ${pointsHtml}
             </div>
           </div>
-          <div class="p-6 rounded-2xl bg-slate-950/90 border border-slate-800 flex flex-col items-center justify-center text-center shadow-inner">
+          <div class="p-6 rounded-2xl bg-slate-950/90 border border-slate-800 flex flex-col items-center justify-center text-center shadow-inner relative overflow-hidden">
+            <div class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-slate-900/80 border border-slate-800 text-[10px] text-amber-400 font-mono">
+              ID: ${data.sectionId || 'sec-default'} | ${data.visualId || 'vis-default'}
+            </div>
             ${svgAnimationHtml}
-            <span class="text-xs font-bold text-slate-400 mt-3 font-display uppercase tracking-wider">${data.visualLabel || 'Interaksi Biotik & Abiotik'}</span>
+            <span class="text-xs font-bold text-slate-300 mt-3 font-display uppercase tracking-wider">${data.visualLabel || 'Visualisasi Proses Ekosistem'}</span>
           </div>
         </div>
 
@@ -847,7 +1015,7 @@
       }
     }
 
-    // --- FITUR UNGGAH MATERI ---
+    // --- FITUR UNGGAH MATERI PINTAR DENGAN sectionId AUTO-GENERATION ---
     function handleUploadMateri() {
       const fileInput = document.getElementById('upload-materi-file');
       if (fileInput.files.length === 0) {
@@ -861,7 +1029,15 @@
           if (file.name.endsWith('.json')) {
             const uploadedModules = JSON.parse(e.target.result);
             if (Array.isArray(uploadedModules) && uploadedModules.length > 0) {
-              MATERI_MODULES = uploadedModules;
+              MATERI_MODULES = uploadedModules.map((mod, idx) => ({
+                sectionId: mod.sectionId || `sec-custom-${idx + 1}`,
+                visualId: mod.visualId || `vis-custom-${idx + 1}`,
+                subBab: idx + 1,
+                title: mod.title || `Sub-Bab ${idx + 1}`,
+                infoBox: mod.infoBox || { header: "Materi Baru", text: "Deskripsi materi kustom." },
+                points: mod.points || [],
+                visualLabel: mod.visualLabel || "Visualisasi Proses"
+              }));
               currentSubBab = 0;
               renderMateri();
               sound.playCorrect();
@@ -875,6 +1051,8 @@
             const paragraphs = textContent.split(/\r?\n\r?\n/).filter(p => p.trim().length > 0);
             if (paragraphs.length > 0) {
               MATERI_MODULES = paragraphs.map((para, idx) => ({
+                sectionId: `sec-txt-${idx + 1}`,
+                visualId: `vis-txt-${idx + 1}`,
                 subBab: idx + 1,
                 title: `Sub-Bab ${idx + 1}: ${appConfig.mapel}`,
                 infoBox: {
@@ -890,7 +1068,7 @@
                     example: "Contoh & Aplikasi: Dipahami dan dipraktikkan."
                   }
                 ],
-                visualLabel: `Visualisasi Sub-Bab ${idx + 1}`
+                visualLabel: `Visualisasi Proses Sub-Bab ${idx + 1}`
               }));
               currentSubBab = 0;
               renderMateri();
@@ -909,6 +1087,8 @@
     function downloadMateriTemplate() {
       const template = [
         {
+          sectionId: "sec-sample-1",
+          visualId: "vis-sample-1",
           subBab: 1,
           title: "Pengertian & Komponen Ekosistem",
           infoBox: {
@@ -1155,9 +1335,10 @@
       renderTeacherSummaryTable();
     }
 
+    // --- TIMER KUIS REBUTAN 30 DETIK ---
     function startTimer() {
       clearInterval(timerInterval);
-      timerSecondsLeft = 10;
+      timerSecondsLeft = 30; // UPDATED TO 30 SECONDS
       questionStartTime = Date.now();
       document.getElementById('timer-count').innerText = timerSecondsLeft;
 
@@ -1168,7 +1349,7 @@
         if (timerSecondsLeft <= 0) {
           clearInterval(timerInterval);
           sound.playWrong();
-          alert("Waktu habis! Soal ditutup.");
+          alert("Waktu 30 detik habis! Soal ditutup.");
           closeQuestionModal();
         }
       }, 1000);
@@ -1249,7 +1430,7 @@
       });
     }
 
-    // --- SUBMIT JAWABAN (BENAR/SALAH TETAP TERKLAIM) ---
+    // --- SUBMIT JAWABAN ---
     function submitAnswer(qId, chosenIdx, teamId) {
       clearInterval(timerInterval);
       const q = QUESTIONS_BANK.find(item => item.id === qId);
@@ -1259,7 +1440,6 @@
       const chosenLetter = String.fromCharCode(65 + chosenIdx);
       const chosenText = q.options[chosenIdx];
 
-      // KLAIM SOAL KE KELOMPOK TERSEBUT (Sama Baik Benar Maupun Salah)
       if (!q.claimedBy) {
         q.claimedBy = teamId;
         team.claimedCount += 1;
